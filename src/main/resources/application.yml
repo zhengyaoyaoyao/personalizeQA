@@ -1,2 +1,38 @@
 server:
   port: 9090
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+spring:
+  application:
+    name: 个性化问答数据平台
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/personalization?useSSL=false&serverTimezone=UTC
+    username: root
+    password: 123456
+  servlet:
+    multipart:
+      max-file-size: 512MB  # Max file size
+      max-request-size: 512MB #Max request size 默认10M
+mybatis-plus:
+  type-aliases-package: com.personalize.personalizeqa.entity
+logging:
+  level:
+    com.personalize.personalizeqa: debug
+personalize:
+  nginx:
+    ip: localhost
+    port: 10000
+  file:
+    type: LOCAL
+    local:
+      uri-prefix: http://192.168.0.109:10000
+      bucket-name: dataset-files
+      endpoint: C:\IT\Project\QA\uploadFiles
+  database:
+    isBlockAttack: false  # 是否启用 攻击 SQL 阻断解析器
+id-generator:
+  machine-code: 1  # id生成器机器掩码
