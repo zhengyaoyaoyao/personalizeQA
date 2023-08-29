@@ -29,7 +29,7 @@ personalize:
   file:
     type: LOCAL
     local:
-      uri-prefix: http://192.168.0.109:10000
+      uri-prefix: http://127.0.0.1:10000
       bucket-name: dataset-files
       endpoint: C:\IT\Project\QA\uploadFiles
   database:

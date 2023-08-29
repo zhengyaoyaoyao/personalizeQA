@@ -1,6 +1,6 @@
 package com.personalize.personalizeqa.strategy;
 
-import com.personalize.personalizeqa.dto.FileDTO;
+import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.entity.File;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,5 +16,7 @@ public interface FileStrategy {
     /**
      * file delete
      */
-    public boolean delete(List<FileDTO> list);
+    public boolean delete(List<FileDeleteDO> list);
+
+    void deleteFolder(String rel_folder);
 }

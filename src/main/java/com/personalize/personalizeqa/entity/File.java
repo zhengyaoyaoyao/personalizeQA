@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("qa_file")
-public class File extends Entity<String>{
+public class File extends En<String> {
     @TableField(value = "data_id")
     private String dataId;
     /**

@@ -2,20 +2,18 @@ package com.personalize.personalizeqa.strategy.impl;
 
 
 import cn.hutool.core.io.file.FileNameUtil;
-import com.personalize.personalizeqa.dto.FileDTO;
+import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.entity.File;
 import com.personalize.personalizeqa.exception.BizException;
 import com.personalize.personalizeqa.exception.code.ExceptionCode;
 import com.personalize.personalizeqa.properties.FileServerProperties;
 import com.personalize.personalizeqa.strategy.FileStrategy;
-import com.personalize.personalizeqa.utils.DateUtils;
 import com.personalize.personalizeqa.utils.FileDataTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -51,14 +49,14 @@ public abstract class AbstractFileStrategy implements FileStrategy {
     }
     public abstract void uploadFile(File file,MultipartFile multipartFile) throws Exception;
     @Override
-    public boolean delete(List<FileDTO> list) {
+    public boolean delete(List<FileDeleteDO> list) {
         if (list==null||list.isEmpty()){
             return true;
         }
         boolean flag = false;//删除操作是否成功的表示
-        for (FileDTO fileDTO : list){
+        for (FileDeleteDO fileDeleteDO : list){
             try {
-                delete(fileDTO);
+                delete(fileDeleteDO);
                 flag = true;
             }catch (Exception e){
                 log.error("e={}",e);
@@ -66,7 +64,10 @@ public abstract class AbstractFileStrategy implements FileStrategy {
         }
         return flag;
     }
-    public abstract void delete(FileDTO fileDTO);
+    public abstract void delete(FileDeleteDO fileDTO);
+
+    @Override
+    public abstract void deleteFolder(String rel_folder);
 
     protected String getUriPrefix(){
         if (StringUtils.isNotEmpty(properties.getUriPrefix())){

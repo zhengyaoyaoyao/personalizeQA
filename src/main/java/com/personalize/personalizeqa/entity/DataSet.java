@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @ToString(callSuper = true)
 @TableName("qa_dataset")
-public class DataSet extends Entity<String>{
+public class DataSet extends En<String> {
     private static final long serialVersionUID = 1L;
     /**
      * 数据集名称
@@ -31,6 +31,21 @@ public class DataSet extends Entity<String>{
     @TableField(value = "data_info")
     private String dataInfo;
     /**
+     * 此数据集拥有的文件数
+     */
+    @TableField(value = "files_size")
+    private Long filesSize;
+    /**
+     * 文件所属文件夹
+     */
+    @TableField(value = "folder")
+    private String folder;
+    /**
+     * 文件所属的直系文件夹
+     */
+    @TableField(value = "rel_folder")
+    private String relFolder;
+    /**
      * 数据集创建的年月
      */
     @TableField(value = "create_month")
@@ -47,7 +62,7 @@ public class DataSet extends Entity<String>{
     private String createDay;
     @Builder
     public DataSet(String id,LocalDateTime createTime,String createUser,LocalDateTime updateTime,
-                   String updateUser,String dataName,String dataUrl,String dataInfo,String createMonth,String createWeek,
+                   String updateUser,String dataName,String dataUrl,String dataInfo,Long filesSize,String folder,String relFolder,String createMonth,String createWeek,
                    String createDay){
         this.id = id;
         this.createTime = createTime;
@@ -57,6 +72,9 @@ public class DataSet extends Entity<String>{
         this.dataName = dataName;
         this.dataUrl = dataUrl;
         this.dataInfo = dataInfo;
+        this.filesSize = filesSize;
+        this.folder = folder;
+        this.relFolder = relFolder;
         this.createMonth = createMonth;
         this.createWeek = createWeek;
         this.createDay = createDay;
