@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequestMapping("/entity")
+@CrossOrigin // 允许来自指定源的请求
 public class EntityController {
     @Autowired
     private IEntityService entityService;
     @PostMapping("/insert")
-    public R<Boolean> insertTaskType(@RequestParam("description") String description, @RequestParam("entityname")String taskName){
+    public R<Boolean> insertTaskType(@RequestParam("description") String description, @RequestParam("entityName")String taskName,@RequestParam("annotationName")String annotationName){
         log.info("taskName:{},taskDescription:{}",taskName,description);
-        boolean insert = entityService.insert(taskName, description);
+        boolean insert = entityService.insert(taskName, description,annotationName);
         return R.success(insert);
     }
 
@@ -56,20 +57,31 @@ public class EntityController {
      * 更新操作
      * @param id
      * @param description
-     * @param taskName
+     * @param entityName
      * @return
      */
     @PostMapping("/update")
-    public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("description") String description,@RequestParam("taskname")String taskName){
-        Boolean isUpdate =entityService.updateById(id,description,taskName);
+    public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("description") String description,@RequestParam("entityName")String entityName,@RequestParam("annotationName")String annotationName){
+        Boolean isUpdate =entityService.updateById(id,description,entityName,annotationName);
         return R.success(isUpdate);
     }
     /**
      * 查询所有任务类型
      */
-    @GetMapping(value = "/tasktypeList")
-    public R<EntityListVO> taskTypeList(){
-        EntityListVO taskTypeListVO =  entityService.taskTypeList();
+    @GetMapping(value = "/entityList")
+    public R<EntityListVO> entityList(){
+        EntityListVO taskTypeListVO =  entityService.entityList();
         return R.success((taskTypeListVO));
+    }
+
+    /**
+     * 确保唯一实体
+     * @param entityName
+     * @return
+     */
+    @GetMapping("/isNotExist")
+    public R<Boolean> isNotExist(@RequestParam("entityName")String entityName){
+        boolean noExist = entityService.isNotExist(entityName);
+        return R.success(noExist);
     }
 }

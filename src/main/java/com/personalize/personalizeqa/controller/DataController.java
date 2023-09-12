@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 @RestController
+@CrossOrigin // 允许来自指定源的请求
 @RequestMapping("/dataset")
 @Slf4j
 public class DataController {
@@ -75,7 +76,7 @@ public class DataController {
     }
     //todo:6.对某个数据集添加文件
     @PostMapping("/uploadFiles")
-    public R<Boolean> update(@RequestParam("id")String id,@RequestParam("files") MultipartFile[] files){
+    public R<Boolean> uploadFiles(@RequestParam("id")String id,@RequestParam("files") MultipartFile[] files){
         if (id!=null){
             return dataSetService.uploadFilesById(id,files);
         }else {

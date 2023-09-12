@@ -17,17 +17,20 @@ import java.time.LocalDateTime;
 public class Entity extends En<String> {
     @TableField("name")
     private String entityName;
+    @TableField("annotation_name")
+    private String annotationName;
     @TableField("entity_desc")
     private String description;
     @Builder
     public Entity(String id, LocalDateTime createTime, String createUser, LocalDateTime updateTime,String updateUser,
-                  String entityName,String description){
+                  String entityName,String annotationName,String description){
         this.id = id;
         this.createTime = createTime;
         this.createUser = createUser;
         this.updateTime = updateTime;
         this.updateUser = updateUser;
         this.entityName = entityName;
+        this.annotationName = annotationName;
         this.description = description;
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -71,7 +72,7 @@ public class TaskTypeServiceImpl extends ServiceImpl<TaskTypeMapper, TaskType> i
 
     @Override
     public TaskTypeListVO taskTypeList() {
-        List<String> taskTypeList = taskTypeMapper.selectTaskTypeNames();
+        List<Map<String,String>> taskTypeList = taskTypeMapper.selectTaskTypeNames();
         TaskTypeListVO taskTypeListVO = new TaskTypeListVO();
         taskTypeListVO.setTaskTypeList(taskTypeList);
         return taskTypeListVO;

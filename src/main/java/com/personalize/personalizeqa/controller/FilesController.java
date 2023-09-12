@@ -8,15 +8,13 @@ import com.personalize.personalizeqa.server.IFileService;
 import com.personalize.personalizeqa.vo.TaskNewFilesListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequestMapping("/files")
+@CrossOrigin // 允许来自指定源的请求
 @Slf4j
 @RestController
 public class FilesController {

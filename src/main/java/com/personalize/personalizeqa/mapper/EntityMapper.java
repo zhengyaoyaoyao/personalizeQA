@@ -6,9 +6,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface EntityMapper extends BaseMapper<Entity> {
-    @Select("select name from qa_entity")
-    List<String> selectEntityNames();
+    @Select("select id,name from qa_entity")
+    List<Map<String,String>> selectEntityNames();
 }

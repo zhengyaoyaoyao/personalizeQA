@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequestMapping("/tasktype")
+@CrossOrigin // 允许来自指定源的请求
 public class TaskTypeController {
     @Autowired
     private ITaskTypeService taskTypeService;

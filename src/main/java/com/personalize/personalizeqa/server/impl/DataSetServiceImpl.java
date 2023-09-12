@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -228,7 +229,7 @@ public class DataSetServiceImpl extends ServiceImpl<DataSetMapper, DataSet> impl
 
     @Override
     public DataListVO datasetList() {
-        List<String> datasetNames = dataSetMapper.selectDatasetNames();
+        List<Map<String,String>> datasetNames = dataSetMapper.selectDatasetNames();
         DataListVO  dataListVO = new DataListVO();
         dataListVO.setDataSetList(datasetNames);
         return dataListVO;

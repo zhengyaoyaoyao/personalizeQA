@@ -4,6 +4,8 @@ package com.personalize.personalizeqa.strategy.impl;
 import cn.hutool.core.io.file.FileNameUtil;
 import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.entity.File;
+import com.personalize.personalizeqa.entity.InfoSource;
+import com.personalize.personalizeqa.entity.InfoSourceFile;
 import com.personalize.personalizeqa.exception.BizException;
 import com.personalize.personalizeqa.exception.code.ExceptionCode;
 import com.personalize.personalizeqa.properties.FileServerProperties;
@@ -27,6 +29,7 @@ public abstract class AbstractFileStrategy implements FileStrategy {
 
     protected FileServerProperties.Properties properties;
 
+    //标注：上传文件
     @Override
     public File upload(MultipartFile multipartFile,String folder) {
         try {
@@ -48,6 +51,27 @@ public abstract class AbstractFileStrategy implements FileStrategy {
         }
     }
     public abstract void uploadFile(File file,MultipartFile multipartFile) throws Exception;
+
+    @Override
+    public InfoSourceFile uploadInfoSourceFile(MultipartFile multipartFile, String taskCode) {
+        try {
+            if (!multipartFile.getOriginalFilename().contains(FILE_SPLIT)){
+                log.debug("缺少后缀名");
+            }
+            InfoSourceFile infoSourceFile = InfoSourceFile.builder().dataType(FileDataTypeUtil.getDataType(multipartFile.getContentType()))
+                    .submittedFileName(multipartFile.getOriginalFilename())
+                    .isDelete(false)
+                    .taskCode(taskCode).size(multipartFile.getSize()).contextType(multipartFile.getContentType())
+                    .ext(FileNameUtil.extName(multipartFile.getOriginalFilename())).build();
+            uoloadInfoSourceFileImpl(infoSourceFile,multipartFile);
+            return infoSourceFile;
+        }catch (Exception e){
+            log.error("上传文件失败,{}",e);
+            throw BizException.wrap(ExceptionCode.BASE_VALID_PARAM.build("文件上传失败"));
+        }
+    }
+    public abstract void uoloadInfoSourceFileImpl(InfoSourceFile infoSourceFile,MultipartFile multipartFile) throws Exception;
+
     @Override
     public boolean delete(List<FileDeleteDO> list) {
         if (list==null||list.isEmpty()){

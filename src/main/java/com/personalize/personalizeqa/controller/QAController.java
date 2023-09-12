@@ -8,6 +8,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/personalize")
+@CrossOrigin // 允许来自指定源的请求
 public class QAController {
     @Autowired
     private NERService nerService;

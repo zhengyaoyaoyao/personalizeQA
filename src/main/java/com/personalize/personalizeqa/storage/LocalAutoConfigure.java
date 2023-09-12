@@ -4,6 +4,7 @@ import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;
 import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.entity.File;
+import com.personalize.personalizeqa.entity.InfoSourceFile;
 import com.personalize.personalizeqa.properties.FileServerProperties;
 import com.personalize.personalizeqa.strategy.impl.AbstractFileStrategy;
 import com.personalize.personalizeqa.utils.DateUtils;
@@ -86,6 +87,30 @@ public class LocalAutoConfigure {
             file.setFileName(fileName);
             file.setRelativePath(relativePath);
         }
+
+        @Override
+        public void uoloadInfoSourceFileImpl(InfoSourceFile infoSourceFile, MultipartFile multipartFile) throws Exception {
+            buildClient();
+            String fileName = UUID.randomUUID().toString()+StrPool.DOT+infoSourceFile.getExt();
+            LocalDateTime now = LocalDateTime.now();
+            String relativePath = Paths.get(now.format(DateTimeFormatter.ofPattern(DateUtils.DEFAULT_YEAR_FORMAT))+SLASH+infoSourceFile.getTaskCode()).toString();
+            String absolutePath = Paths.get(properties.getEndpoint(),properties.getBucketName(),relativePath).toString();
+            java.io.File outFile = new java.io.File(Paths.get(absolutePath,fileName).toString());
+            org.apache.commons.io.FileUtils.writeByteArrayToFile(outFile,multipartFile.getBytes());
+            String url = new StringBuilder(getUriPrefix())
+                    .append(properties.getBucketName())
+                    .append(StrPool.SLASH)
+                    .append(relativePath)
+                    .append(StrPool.SLASH)
+                    .append(fileName)
+                    .toString();
+            url = StrUtil.replace(url, "\\\\", StrPool.SLASH);
+            url = StrUtil.replace(url, "\\", StrPool.SLASH);
+            infoSourceFile.setUrl(url);
+            infoSourceFile.setFileName(fileName);
+            infoSourceFile.setRelativePath(relativePath);
+        }
+
         @Override
         public void delete(FileDeleteDO fileDeleteDO) {
             buildClient();

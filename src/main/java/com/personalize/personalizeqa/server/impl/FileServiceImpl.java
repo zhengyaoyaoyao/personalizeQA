@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personalize.personalizeqa.domain.FileDO;
 import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.dto.FileListDTO;
+import com.personalize.personalizeqa.dto.UserDTO;
 import com.personalize.personalizeqa.entity.File;
 import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.enumeration.DataType;
@@ -15,6 +16,7 @@ import com.personalize.personalizeqa.server.IDataSetService;
 import com.personalize.personalizeqa.server.IFileService;
 import com.personalize.personalizeqa.strategy.FileStrategy;
 import com.personalize.personalizeqa.utils.FileBiz;
+import com.personalize.personalizeqa.utils.UserHolder;
 import com.personalize.personalizeqa.vo.TaskNewFilesListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,8 +57,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
         file.setCreateTime(now);
         file.setUpdateTime(now);
         //人员信息
-        file.setCreateUser("0");
-        file.setUpdateUser("0");
+        UserDTO user = UserHolder.getUser();
+        file.setCreateUser(user.getUsername());
+        file.setUpdateUser(user.getUsername());
         return saveOrUpdate(file);
     }
 
@@ -204,9 +208,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
 
     @Override
     public TaskNewFilesListVO getFilesNameListByDataName(String dataName) {
-        List<String> strings = fileMapper.selectFileNamebyFolder(dataName);
+        List<Map<String,String>> lists = fileMapper.selectFileNameByFolder(dataName);
         TaskNewFilesListVO taskNewFilesListVO = new TaskNewFilesListVO();
-        taskNewFilesListVO.setFilesName(strings);
+        taskNewFilesListVO.setFileNames(lists);
         return taskNewFilesListVO;
     }
 }

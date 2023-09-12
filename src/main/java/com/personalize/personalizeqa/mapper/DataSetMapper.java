@@ -8,9 +8,10 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DataSetMapper extends BaseMapper<DataSet> {
-    @Select("select data_name from qa_dataset")
-    List<String> selectDatasetNames();
+    @Select("select id,data_name from qa_dataset")
+    List<Map<String,String>> selectDatasetNames();
 }
