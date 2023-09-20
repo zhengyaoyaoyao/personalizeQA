@@ -2,6 +2,7 @@ package com.personalize.personalizeqa.server.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,6 +25,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private IdGenerate<Long> idGenerate;
     @Autowired
     private UserMapper userMapper;
+    private static final String USER_CODE="user:code:";
     @Override
     public R<String> login(LoginFormDTO loginFormDTO, HttpServletRequest request) {
         String curUsername = loginFormDTO.getUsername();
@@ -104,6 +107,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             UserInfoVO userInfoVO = new UserInfoVO();
             userInfoVO.setId(user.getId());
             userInfoVO.setUsername(user.getUsername());
+            userInfoVO.setUserCode(user.getUserCode());
             userInfoVO.setNickName(user.getNickName());
             userInfoVO.setAuthority(user.getAuthority());
             userInfoVO.setOrganization(user.getOrganization());
@@ -136,10 +140,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String userId = idGenerate.generate().toString();
         LocalDateTime now = LocalDateTime.now();
         UserDTO createUser = UserHolder.getUser();//创建和更新的用户
-        User userInsert = User.builder().id(userId).username(username).nickName(nickName).phone(phone).password(password).organization(organization).authority(authority).createTime(now)
+        //生成人物代码
+        organization = StringUtils.upperCase(organization);
+        String userCode = codeGenerate(organization);
+        authority = StringUtils.lowerCase(authority.trim());
+        User userInsert = User.builder().id(userId).username(username).userCode(userCode).nickName(nickName).phone(phone).password(password).organization(organization).authority(authority).createTime(now)
                 .createUser(createUser.getUsername()).updateUser(createUser.getUsername()).updateTime(now).status(status).build();
         boolean save = save(userInsert);
         return save;
+    }
+    private String codeGenerate(String organization){
+        LocalDateTime now = LocalDateTime.now();
+        String time = DateUtil.format(now,"yyyyMM");
+        organization = StringUtils.lowerCase(organization.trim());
+        long count = stringRedisTemplate.opsForValue().increment(USER_CODE+organization);
+        DecimalFormat df = new DecimalFormat("0000");
+        String formatted = df.format(count%10000);
+        String result = StringUtils.upperCase(organization)+time+formatted;
+        return result;
     }
 
     @Override

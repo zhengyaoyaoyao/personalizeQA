@@ -13,11 +13,11 @@ import java.util.List;
 
 public interface ITaskService extends IService<Task> {
 
-    Boolean insert(String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String infoSource, String infoSourceRule, Boolean status);
+    Boolean insert(String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String infoSource, String infoSourceRule,String taskNote, Boolean status);
 
     R<Page<TaskShowListVO>> findAll(Integer page, Integer perPage, String keyword);
 
-    Boolean updateById(String id, String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String infoSource, Boolean status);
+    Boolean updateById(String id, String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String taskNote, Boolean status);
 
     Boolean deleteById(String id);
 

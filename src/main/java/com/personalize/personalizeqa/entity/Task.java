@@ -28,12 +28,14 @@ public class Task  extends En<String>{
     private String taskSourceName;
     @TableField("task_rule")
     private String taskRule;
+    @TableField("task_note")
+    private String taskNote;
     @TableField("status")
     private boolean status;
     @Builder
     public Task(String id, LocalDateTime createTime, String createUser, LocalDateTime updateTime, String updateUser,
                 String taskName,String taskCollectionName, String charge, String taskTime,
-                String taskSourceName,String taskRule,Boolean status){
+                String taskSourceName,String taskRule,String taskNote,Boolean status){
         this.id = id;
         this.createTime = createTime;
         this.createUser = createUser;
@@ -45,6 +47,7 @@ public class Task  extends En<String>{
         this.taskTime = taskTime;
         this.taskSourceName = taskSourceName;
         this.taskRule = taskRule;
+        this.taskNote = taskNote;
         this.status = status;
     }
 }

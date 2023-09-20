@@ -68,6 +68,5 @@ public class FileBiz {
                     fileMap.put(submittedFileName, file.getUrl());
                 });
         ZipUtils.zipFilesByInputStream(fileMap,Long.valueOf(fileSize),downLoadFileName,request,response);
-
     }
 }

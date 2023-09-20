@@ -134,5 +134,10 @@ public class LocalAutoConfigure {
             }
             fileFolder.delete();
         }
+
+        @Override
+        public String getFileContent(String relativePath, String fileName) {
+            return null;
+        }
     }
 }

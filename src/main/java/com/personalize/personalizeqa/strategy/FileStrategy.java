@@ -17,8 +17,9 @@ public interface FileStrategy {
     /**
      * file delete
      */
-    public boolean delete(List<FileDeleteDO> list);
     public InfoSourceFile uploadInfoSourceFile(MultipartFile file,String folder);
 
+    public boolean delete(List<FileDeleteDO> list);
     void deleteFolder(String rel_folder);
+    String getFileContent(String relativePath,String fileName);
 }

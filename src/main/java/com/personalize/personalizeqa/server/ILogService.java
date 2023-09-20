@@ -8,7 +8,7 @@ import com.personalize.personalizeqa.entity.R;
 import java.time.LocalDateTime;
 
 public interface ILogService extends IService<Log> {
-    public void insertLog(String actionName);
+//    public void insertLog(String actionName);
 
     R<Page<Log>> findAll(Integer page, Integer perPage, String keyword);
 }

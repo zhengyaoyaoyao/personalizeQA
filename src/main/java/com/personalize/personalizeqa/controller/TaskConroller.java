@@ -1,7 +1,9 @@
 package com.personalize.personalizeqa.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.entity.R;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.ITaskService;
 import com.personalize.personalizeqa.vo.TaskShowListVO;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +21,12 @@ import java.util.List;
 public class TaskConroller {
     @Autowired
     private ITaskService taskService;
+    @OperationLogging(description = "新建采集任务",type = OperationType.INSERT)
     @PostMapping("/insert")
     public R<Boolean> insertTask(@RequestParam("taskName")String taskName,@RequestParam("taskCollectionName")String taskCollectionName, @RequestParam("charge")String charge, @RequestParam("proMembers") List<String> proMembers,
                                  @RequestParam("taskTime")String taskTime,@RequestParam("infoSource")String infoSource,
-                                 @RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("status")Boolean status){
-        Boolean insert =  taskService.insert(taskName,taskCollectionName,charge,proMembers,taskTime,infoSource,infoSourceRule,status);
+                                 @RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("taskNote")String taskNote,@RequestParam("status")Boolean status){
+        Boolean insert =  taskService.insert(taskName,taskCollectionName,charge,proMembers,taskTime,infoSource,infoSourceRule,taskNote,status);
         return R.success(insert);
     }
     @GetMapping("/findall")
@@ -31,13 +34,15 @@ public class TaskConroller {
         R<Page<TaskShowListVO>> tasks = taskService.findAll(page,perPage,keyword);
         return tasks;
     }
+    @OperationLogging(description = "更新采集任务信息",type = OperationType.UPDATE)
     @PostMapping("/update")
     public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("taskName")String taskName,@RequestParam("taskCollectionName")String taskCollectionName, @RequestParam("charge")String charge, @RequestParam("proMembers") List<String> proMembers,
-                                 @RequestParam("taskTime")String taskTime,@RequestParam("infoSource")String infoSource,
+                                 @RequestParam("taskTime")String taskTime,@RequestParam("taskNote")String taskNote,
                                  @RequestParam("status")Boolean status){
-        Boolean isUpdate =  taskService.updateById(id,taskName,taskCollectionName,charge,proMembers,taskTime,infoSource,status);
+        Boolean isUpdate =  taskService.updateById(id,taskName,taskCollectionName,charge,proMembers,taskTime,taskNote,status);
         return R.success(isUpdate);
     }
+    @OperationLogging(description = "删除信源任务",type = OperationType.DELETE)
     @GetMapping("/deleteById")
     public R<Boolean> deleteById(@RequestParam("id")String id){
         Boolean isDelete = taskService.deleteById(id);

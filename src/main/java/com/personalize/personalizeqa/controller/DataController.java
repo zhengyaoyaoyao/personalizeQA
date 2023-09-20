@@ -1,10 +1,12 @@
 package com.personalize.personalizeqa.controller;
 
 
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.dto.DataSetListDTO;
 import com.personalize.personalizeqa.entity.DataSet;
 import com.personalize.personalizeqa.entity.File;
 import com.personalize.personalizeqa.entity.R;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IDataSetService;
 import com.personalize.personalizeqa.vo.DataListVO;
 import lombok.extern.slf4j.Slf4j;
@@ -39,13 +41,21 @@ public class DataController {
         R<Page<DataSet>> datasetList = dataSetService.findAll(page,perPage,keyword);
         return datasetList;
     }
-    //todo: 2.查询数据集内容
     @GetMapping("/info")
     public R<DataSet> findById(@RequestParam("id") String id){
         R<DataSet> dataSet = dataSetService.findById(id);
         return dataSet;
     }
-    //todo：3.数据集上传
+
+    /**
+     * 上传文件
+     * @param dataName
+     * @param dataSetUrl
+     * @param dataSetInfo
+     * @param files
+     * @return
+     */
+    @OperationLogging(description = "上传数据集",type = OperationType.IMPORT)
     @PostMapping("/upload")
     public R<DataSet> uploader(@RequestParam("dataName") String dataName,
                                @RequestParam("dataSetUrl") String dataSetUrl,
@@ -54,14 +64,20 @@ public class DataController {
         //将信息保存到数据库中，dataName作为区分的文件夹，
         return dataSetService.upload(dataName,dataSetUrl,dataSetInfo,files);
     }
-    //todo：4.数据集删除
+
+    /**
+     * 根据id删除数据集
+     * @param id
+     * @return
+     */
+    @OperationLogging(description = "根据id删除数据集",type = OperationType.DELETE)
     @GetMapping("/deleteById")
     public R<Boolean> deleteById(@RequestParam("id")String id){
         R<Boolean> isDelete = dataSetService.deleteById(id);
         return isDelete;
     }
 
-    //todo：5.数据集内容更新
+    @OperationLogging(description = "更新数据集信息",type = OperationType.UPDATE)
     @GetMapping("/update")
     public R<DataSet> update(@RequestParam("id")String id,
                              @RequestParam("dataName")String dataName,
@@ -74,7 +90,7 @@ public class DataController {
         R<DataSet> updateDateset = dataSetService.updateById(id, dataName, dataUrl, dataInfo);
         return updateDateset;
     }
-    //todo:6.对某个数据集添加文件
+//    @OperationLogging(description = "根据数据集上传文件",type = OperationType.IMPORT)
     @PostMapping("/uploadFiles")
     public R<Boolean> uploadFiles(@RequestParam("id")String id,@RequestParam("files") MultipartFile[] files){
         if (id!=null){
@@ -92,6 +108,7 @@ public class DataController {
         boolean noExist = dataSetService.isNotExist(dataName);
         return R.success(noExist);
     }
+    @OperationLogging(description = "下载数据集文件",type = OperationType.EXPORT)
     @GetMapping(value = "/download",produces = "application/octet-stream")
     public void download(@RequestParam(value = "id")String id,@RequestParam(value = "dataName")String dataName, HttpServletRequest request, HttpServletResponse response) throws Exception{
         dataSetService.download(request,response,dataName,id);

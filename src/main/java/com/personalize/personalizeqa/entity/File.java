@@ -71,9 +71,24 @@ public class File extends En<String> {
      */
     @TableField("context_type")
     private String contextType;
+    /**
+     * FastDFS组
+     * 用于FastDFS
+     */
+    @TableField("group_")
+    private String group;
+
+    /**
+     * FastDFS远程文件名
+     * 用于FastDFS
+     */
+    @TableField("path")
+    private String path;
     @Builder
     public File(String id, LocalDateTime createTime, String createUser, LocalDateTime updateTime, String updateUser,
-                String dataId,DataType dataType,String submittedFileName,Boolean isDelete,String folder,String url,String relativePath,String fileName,String ext,Long size,String contextType){
+                String dataId,DataType dataType,String submittedFileName,Boolean isDelete,String folder,String url,
+                String relativePath,String fileName,String ext,Long size,String contextType,
+                String group,String path){
         this.id = id;
         this.createTime = createTime;
         this.createUser = createUser;
@@ -90,5 +105,7 @@ public class File extends En<String> {
         this.ext = ext;
         this.size = size;
         this.contextType = contextType;
+        this.group = group;
+        this.path = path;
     }
 }

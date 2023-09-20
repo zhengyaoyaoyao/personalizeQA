@@ -40,10 +40,24 @@ public class InfoSourceFile extends En<String>{
     private Long size;
     @TableField("status")
     private Boolean status;
+    /**
+     * FastDFS组
+     * 用于FastDFS
+     */
+    @TableField("group_")
+    private String group;
+
+    /**
+     * FastDFS远程文件名
+     * 用于FastDFS
+     */
+    @TableField("path")
+    private String path;
     @Builder
     public InfoSourceFile(String id, LocalDateTime createTime, String createUser, LocalDateTime updateTime, String updateUser,
                           String taskId,String taskCode,DataType dataType, String contextType,String submittedFileName,
-                          Boolean isDelete,String url,String relativePath,String fileName,String ext,Long size,Boolean status){
+                          Boolean isDelete,String url,String relativePath,String fileName,String ext,Long size,Boolean status,
+                          String group,String path){
         this.id = id;
         this.createTime = createTime;
         this.createUser = createUser;
@@ -61,6 +75,8 @@ public class InfoSourceFile extends En<String>{
         this.ext = ext;
         this.size = size;
         this.status = status;
+        this.group = group;
+        this.path = path;
     }
 
 

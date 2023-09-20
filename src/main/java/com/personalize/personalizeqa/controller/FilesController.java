@@ -1,9 +1,11 @@
 package com.personalize.personalizeqa.controller;
 
 
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.dto.FileListDTO;
 import com.personalize.personalizeqa.entity.File;
 import com.personalize.personalizeqa.entity.R;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IFileService;
 import com.personalize.personalizeqa.vo.TaskNewFilesListVO;
 import lombok.extern.slf4j.Slf4j;
@@ -31,15 +33,18 @@ public class FilesController {
         R<File> file = fileService.findById(id);
         return file;
     }
+    @OperationLogging(description = "更新文件信息",type = OperationType.UPDATE)
     @GetMapping("/update")
     public R<File> updateById(@RequestParam("id")String id,@RequestParam("submittedFileName")String fileName){
         R<File> file = fileService.updateInfo(id,fileName);
         return file;
     }
+//    @OperationLogging(description = "下载文件",type = OperationType.EXPORT)
     @GetMapping(value = "/download" ,produces = "application/octet-stream")
     public void download(@RequestParam(value = "id") String id , HttpServletRequest request, HttpServletResponse response) throws Exception{
         fileService.download(request,response,id);
     }
+    @OperationLogging(description = "删除文件",type = OperationType.DELETE)
     @GetMapping("/delete")
     public R<Boolean> deleteById(@RequestParam("id")String id){
         boolean isDelete = fileService.deleteFilesById(id);

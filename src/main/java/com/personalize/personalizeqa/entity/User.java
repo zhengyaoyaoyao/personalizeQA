@@ -24,6 +24,8 @@ public class User extends En<String> {
      */
     @TableField("username")
     private String username;
+    @TableField("user_code")
+    private String userCode;
     /**
      * 手机号
      */
@@ -63,7 +65,7 @@ public class User extends En<String> {
     private boolean status;
     @Builder
     public User(String id, LocalDateTime createTime, String createUser, LocalDateTime updateTime,String updateUser,
-                String username,String phone,String password,String nickName,String organization,String authority,
+                String username,String userCode,String phone,String password,String nickName,String organization,String authority,
                 LocalDateTime loginTime,String loginIP,Boolean status){
         this.id = id;
         this.createTime = createTime;
@@ -71,6 +73,7 @@ public class User extends En<String> {
         this.updateTime = updateTime;
         this.updateUser = updateUser;
         this.username = username;
+        this.userCode = userCode;
         this.phone = phone;
         this.password = password;
         this.nickName = nickName;

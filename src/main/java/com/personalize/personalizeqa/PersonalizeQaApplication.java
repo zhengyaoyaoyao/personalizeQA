@@ -30,5 +30,4 @@ public class PersonalizeQaApplication {
 				"127.0.0.1",
 				env.getProperty("server.port"));
 	}
-
 }

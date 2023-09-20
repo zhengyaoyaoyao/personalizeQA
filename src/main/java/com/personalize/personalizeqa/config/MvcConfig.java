@@ -11,10 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfig implements WebMvcConfigurer {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private ILogService logService;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor(stringRedisTemplate,logService)).excludePathPatterns("/user/login");
+        registry.addInterceptor(new LoginInterceptor(stringRedisTemplate)).excludePathPatterns("/user/login");
     }
 }

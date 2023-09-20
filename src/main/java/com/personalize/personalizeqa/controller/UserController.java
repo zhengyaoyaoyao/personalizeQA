@@ -2,12 +2,14 @@ package com.personalize.personalizeqa.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.dto.LoginFormDTO;
 import com.personalize.personalizeqa.dto.UserDTO;
 import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.entity.Relation;
 import com.personalize.personalizeqa.entity.TaskType;
 import com.personalize.personalizeqa.entity.User;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IUserService;
 import com.personalize.personalizeqa.utils.UserHolder;
 import com.personalize.personalizeqa.vo.UserInfoVO;
@@ -51,6 +53,7 @@ public class UserController {
         boolean noExist = userService.isNotExist(username);
         return R.success(noExist);
     }
+    @OperationLogging(description = "新建用户",type = OperationType.INSERT)
     @PostMapping("/insert")
     public R<Boolean> insertUser(@RequestParam("username")String username,@RequestParam("nickName")String nickName,@RequestParam("phone")String phone,@RequestParam("password")String password,
                                  @RequestParam("organization")String organization,@RequestParam("authority")String authority,@RequestParam("status")Boolean status){
@@ -66,6 +69,7 @@ public class UserController {
         User user = userService.searchUserById(id);
         return  R.success(user);
     }
+    @OperationLogging(description = "更新用户信息",type =OperationType.UPDATE)
     @PostMapping("/update")
     public R<Boolean> updateUser(@RequestParam("id")String id,@RequestParam("username")String username,@RequestParam("nickName")String nickName,@RequestParam("phone")String phone,@RequestParam("password")String password,
                                  @RequestParam("organization")String organization,@RequestParam("authority")String authority,@RequestParam("status")Boolean status){
@@ -76,6 +80,7 @@ public class UserController {
             return R.fail("更新任务失败,请重新再试");
         }
     }
+    @OperationLogging(description = "删除用户信息",type = OperationType.DELETE)
     @GetMapping("/deleteById")
     public R<Boolean> deleteById(@RequestParam("id")String id){
         Boolean isDelete =  userService.deleteById(id);

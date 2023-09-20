@@ -2,7 +2,9 @@ package com.personalize.personalizeqa.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.entity.R;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IAnnotationTaskService;
 import com.personalize.personalizeqa.vo.TaskInfoVO;
 import com.personalize.personalizeqa.vo.TasksListVO;
@@ -20,7 +22,21 @@ public class AnnotationTaskController {
     @Autowired
     private IAnnotationTaskService annotationTaskService;
 
-    //todo 1.新建一个任务
+    /**
+     * 插入一个标注任务
+     * @param taskName
+     * @param taskDatasetId
+     * @param annotationFilesId
+     * @param taskTypeId
+     * @param dataType
+     * @param entityList
+     * @param relationList
+     * @param taskRule
+     * @param taskDesc
+     * @param taskUser
+     * @return
+     */
+    @OperationLogging(description = "新建标注任务",type = OperationType.INSERT)
     @PostMapping("/insert")
     public R<Boolean> insert(@RequestParam("taskName")String taskName, @RequestParam("taskDatasetId")String taskDatasetId, @RequestParam("annotationFilesId")List<String> annotationFilesId,
                              @RequestParam("taskTypeId")String taskTypeId,@RequestParam("dataType")String dataType,@RequestParam(value = "entityList",required = false)List<String> entityList,
@@ -33,7 +49,14 @@ public class AnnotationTaskController {
             return R.fail("新建任务失败,请重新再试");
         }
     }
-    //todo 2.查询所有信息，且模糊查询
+
+    /**
+     * 查询信息
+     * @param page
+     * @param perPage
+     * @param keyword
+     * @return
+     */
     @GetMapping("/findall")
     public R<Page<TasksListVO>> findAll(@RequestParam(value = "page",defaultValue = "1")Integer page, @RequestParam("per_page")Integer perPage, @RequestParam(value = "keyword",required = false)String keyword){
         log.info("一页多少个：",page);
@@ -43,15 +66,17 @@ public class AnnotationTaskController {
         return taskList;
     }
 
-    //todo 3.删除
+    /**
+     * 删除标注任务
+     * @param id
+     * @return
+     */
+    @OperationLogging(description = "根据id删除标注任务",type = OperationType.DELETE)
     @GetMapping("/deleteById")
-    public R<Boolean> deleteById(@RequestParam("id")String id){
+    public R<Boolean> deleteById(@RequestParam("id")String id) {
         R<Boolean> isDelete = annotationTaskService.deleteById(id);
         return isDelete;
     }
-    //todo 4. 更新任务信息
-
-    //todo 5. 查看详情，通过id查询信息
     @GetMapping("/info")
     public R<TaskInfoVO>  findById(@RequestParam("id")String id){
         R<TaskInfoVO> taskInfoVOR = annotationTaskService.findById(id);

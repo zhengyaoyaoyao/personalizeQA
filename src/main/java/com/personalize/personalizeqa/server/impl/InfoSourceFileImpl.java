@@ -1,5 +1,6 @@
 package com.personalize.personalizeqa.server.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,7 +12,9 @@ import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.mapper.InfoSourceFileMapper;
 import com.personalize.personalizeqa.server.IInfoSourceFileService;
 import com.personalize.personalizeqa.server.IInfoSourceService;
+import com.personalize.personalizeqa.storage.AliOssAutoConfigure;
 import com.personalize.personalizeqa.strategy.FileStrategy;
+import com.personalize.personalizeqa.strategy.impl.AbstractFileStrategy;
 import com.personalize.personalizeqa.utils.UserHolder;
 import com.personalize.personalizeqa.vo.InfoSourceFileVO;
 import org.apache.http.HttpEntity;
@@ -24,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
     private FileStrategy fileStrategy;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private AliOssAutoConfigure.AliServiceImpl aliService;
     @Override
     public boolean upload(InfoSourceFile infoSourceFile) {
         LocalDateTime now  = LocalDateTime.now();
@@ -67,7 +73,7 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
         return result;
     }
 
-    @Override
+
     public String getFileContent(String id) {
         InfoSourceFile byId = getById(id);
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -84,7 +90,7 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
                     }
                 } else {
                     // 处理请求失败的情况
-                    return "文件获取失败";
+                    return null;
                     // 您可以抛出异常或者返回适当的错误消息
                 }
             }
@@ -92,11 +98,11 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
             // 处理异常
             log.error("文件获取失败");
         }
-        return "文件获取失败";
+        return null;
     }
 
     /**
-     * 根据
+     * 根据id删除文件
      * @param id
      * @return
      */
@@ -130,15 +136,17 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
         InfoSourceFile byId = getById(id);
 
         //获得文件，从而要获得这个文件的json内容
-        String fileContent = getFileContent(id);
+        String fileContent = getAliFileContent(id);
         if (StrUtil.isBlank(fileContent)){
             return R.fail("获取文件内容异常");
         }
-        String collection = byId.getTaskCode().trim();
+        LocalDateTime now = LocalDateTime.now();
+        String time = DateUtil.format(now,"yyyyMMdd");
+        String collection = byId.getTaskCode().trim()+time;
         //确保获得文件内容，
         //1. 要先创建taskCode集合，
-        if (mongoTemplate.collectionExists(collection)){
-            mongoTemplate.createCollection(byId.getTaskCode());
+        if (!mongoTemplate.collectionExists(collection)){
+            mongoTemplate.createCollection(collection);
         }
         try {
             fileContent = fileContent.replaceAll("\uFEFF", "");
@@ -158,5 +166,11 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
         byId.setStatus(true);
         boolean b = updateById(byId);
         return R.success(b,"数据库载入成功");
+    }
+    @Override
+    public String getAliFileContent(String id){
+        InfoSourceFile byId = getById(id);
+        String fileContent = aliService.getFileContent(byId.getRelativePath(), byId.getFileName());
+        return fileContent;
     }
 }

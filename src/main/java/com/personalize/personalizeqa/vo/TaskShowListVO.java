@@ -20,5 +20,6 @@ public class TaskShowListVO {
     private String taskCollectionName;
     private String infoSourceName;
     private String infoSourceRule;
+    private String taskNote;
     private boolean status;
 }

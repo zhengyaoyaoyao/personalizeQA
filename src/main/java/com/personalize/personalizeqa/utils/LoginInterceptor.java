@@ -20,11 +20,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
     private StringRedisTemplate stringRedisTemplate;
-    private ILogService logService;
 
-    public LoginInterceptor(StringRedisTemplate stringRedisTemplate,ILogService logService) {
+    public LoginInterceptor(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
-        this.logService = logService;
     }
 
     @Override
@@ -48,16 +46,16 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
         UserHolder.saveUser(userDTO);
-        String actionName = request.getRequestURI();
-//        if (StrUtil.equals(userDTO.getPreAction(),"noAction")||StrUtil.equals(actionName,"/user/profile")||StrUtil.equals(actionName,userDTO.getPreAction())){
+//        String actionName = request.getRequestURI();
+////        if (StrUtil.equals(userDTO.getPreAction(),"noAction")||StrUtil.equals(actionName,"/user/profile")||StrUtil.equals(actionName,userDTO.getPreAction())){
+////            log.info("日志信息属于noAction、profile、与前面日志信息相同");
+//        if (StrUtil.equals(actionName,"/user/profile")){
 //            log.info("日志信息属于noAction、profile、与前面日志信息相同");
-        if (StrUtil.equals(actionName,"/user/profile")){
-            log.info("日志信息属于noAction、profile、与前面日志信息相同");
-        }else {
-            //无操作+和前操作不同，则添加
-            log.info("之前的操作,后来的操作:{}",actionName);
-            logService.insertLog(actionName);
-        }
+//        }else {
+//            //无操作+和前操作不同，则添加
+//            log.info("之前的操作,后来的操作:{}",actionName);
+//            logService.insertLog(actionName);
+//        }
         //刷新token有效期
         stringRedisTemplate.expire(key,RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);
         return true;

@@ -1,9 +1,11 @@
 package com.personalize.personalizeqa.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.entity.Entity;
 import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.entity.TaskType;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IEntityService;
 import com.personalize.personalizeqa.server.ITaskTypeService;
 import com.personalize.personalizeqa.vo.EntityListVO;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class EntityController {
     @Autowired
     private IEntityService entityService;
+    @OperationLogging(description = "插入实体信息",type = OperationType.INSERT)
     @PostMapping("/insert")
     public R<Boolean> insertTaskType(@RequestParam("description") String description, @RequestParam("entityName")String taskName,@RequestParam("annotationName")String annotationName){
         log.info("taskName:{},taskDescription:{}",taskName,description);
@@ -47,6 +50,7 @@ public class EntityController {
      * @param id
      * @return
      */
+    @OperationLogging(description = "删除实体",type = OperationType.DELETE)
     @GetMapping("/deleteById")
     public R<Boolean> deleteById(@RequestParam("id")String id){
         Boolean isDelete  = entityService.deleteById(id);
@@ -60,6 +64,7 @@ public class EntityController {
      * @param entityName
      * @return
      */
+    @OperationLogging(description = "更新实体信息",type = OperationType.UPDATE)
     @PostMapping("/update")
     public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("description") String description,@RequestParam("entityName")String entityName,@RequestParam("annotationName")String annotationName){
         Boolean isUpdate =entityService.updateById(id,description,entityName,annotationName);

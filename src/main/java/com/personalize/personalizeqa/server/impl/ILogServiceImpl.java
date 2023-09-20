@@ -18,14 +18,14 @@ import java.time.LocalDateTime;
 public class ILogServiceImpl extends ServiceImpl<ILogMapper, Log> implements ILogService {
     @Autowired
     private IdGenerate<Long> idGenerate;
-    @Override
-    public void insertLog(String actionName) {
-        String id = idGenerate.generate().toString();
-        LocalDateTime now= LocalDateTime.now();
-        UserDTO user = UserHolder.getUser();
-        Log log = Log.builder().id(id).actionName(actionName).actionUser(user.getUsername()).actionAuthority(user.getAuthority()).actionTime(now).build();
-        save(log);
-    }
+//    @Override
+//    public void insertLog(String actionName) {
+//        String id = idGenerate.generate().toString();
+//        LocalDateTime now= LocalDateTime.now();
+//        UserDTO user = UserHolder.getUser();
+//        Log log = Log.builder().id(id).actionName(actionName).actionUser(user.getUsername()).actionAuthority(user.getAuthority()).actionTime(now).build();
+//        save(log);
+//    }
 
     @Override
     public R<Page<Log>> findAll(Integer curPage, Integer maxPage, String keyword) {

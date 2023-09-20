@@ -15,12 +15,24 @@ import java.time.LocalDateTime;
 public class Log {
     @TableId(value = "id",type = IdType.INPUT)
     private String id;
-    @TableField("action_name")
-    private String actionName;
+    @TableField("description")
+    private String description;
     @TableField("action_user")
     private String actionUser;
     @TableField("action_time")
     private LocalDateTime actionTime;
     @TableField("action_authority")
     private String actionAuthority;
+    @TableField("ip")
+    private String ip;
+    @TableField("method")
+    private String method;
+    @TableField("params")
+    private String params;
+    @TableField("operation_type")
+    private Integer operationType;
+    @TableField("result")
+    private String result;
+    @TableField("duration")
+    private Long duration;
 }

@@ -1,6 +1,6 @@
 
 server:
-  port: 9090
+  port: 9091
   servlet:
     encoding:
       enabled: true
@@ -11,22 +11,17 @@ spring:
     name: 个性化问答数据平台
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-cn-uqm3eed7c000xvbo.rwlb.rds.aliyuncs.com:3306/personalization?useUnicode=true&useSSL=true&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    url: jdbc:mysql://127.0.0.1:3306/personalization?useSSL=false&serverTimezone=UTC
     username: root
-    password: Qa123456
-    druid:
-      initial-size: 2
-      db-type: com.alibaba.druid.pool.DruidDataSource
-      min-idle: 2
-      max-wait: 60000
+    password: 123456
   servlet:
     multipart:
       max-file-size: 512MB  # Max file size
       max-request-size: 512MB #Max request size 默认10M
   redis:
-    host: r-2ze3a0rze11kau5elzpd.redis.rds.aliyuncs.com
+    host: 192.168.109.129
     port: 6379
-    password: Qa123456
+    password: 123456
     lettuce:
       pool:
         max-active: 10
@@ -41,9 +36,16 @@ spring:
       uris: http://192.168.109.129:9200
   data:
     mongodb:
-      uri: mongodb://root:Mongodb123@dds-2ze92a4d6f62fb841990-pub.mongodb.rds.aliyuncs.com:3717,dds-2ze92a4d6f62fb842745-pub.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-71526813
+      host: localhost
+      port: 27017
+      database: personalization
   profiles:
     active: dev
+elastic:
+  host: 192.168.109.129
+  port: 9200
+  username: elastic
+  password: 123456
 mybatis-plus:
   type-aliases-package: com.personalize.personalizeqa.entity
 logging:
@@ -54,16 +56,11 @@ personalize:
     ip: localhost
     port: 10000
   file:
-    type: ALI
+    type: LOCAL
     local:
       uri-prefix: http://127.0.0.1:10000
       bucket-name: dataset-files
       endpoint: C:\IT\Project\QA\uploadFiles
-    ali:
-      bucket-name: personlized-loan
-      endpoint: http://oss-cn-beijing.aliyuncs.com/
-      access-key-id: LTAI5tF1TYko4pncbKXEyAgu
-      access-key-secret: JZ7JxbVRqKqJf9n5aoAy1Fj0BNGDle
   database:
     isBlockAttack: false  # 是否启用 攻击 SQL 阻断解析器
 id-generator:

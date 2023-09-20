@@ -1,9 +1,11 @@
 package com.personalize.personalizeqa.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.entity.Entity;
 import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.entity.Relation;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IRelationService;
 import com.personalize.personalizeqa.vo.RelationListVO;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class RelationController {
     @Autowired
     private IRelationService relationService;
+    @OperationLogging(description = "新建关系",type = OperationType.INSERT)
     @PostMapping("/insert")
     public R<Boolean> insertTaskType(@RequestParam("description") String description, @RequestParam("relationName")String relationName,@RequestParam("annotationName")String annotationName){
         log.info("relationName:{},relationDescription:{}",relationName,description);
@@ -45,12 +48,12 @@ public class RelationController {
      * @param id
      * @return
      */
+    @OperationLogging(description = "删除关系",type = OperationType.DELETE)
     @GetMapping("/deleteById")
     public R<Boolean> deleteById(@RequestParam("id")String id){
         Boolean isDelete  = relationService.deleteById(id);
         return R.success(isDelete);
     }
-
     /**
      * 更新操作
      * @param id
@@ -58,6 +61,7 @@ public class RelationController {
      * @param relationName
      * @return
      */
+    @OperationLogging(description = "更新关系信息",type = OperationType.UPDATE)
     @PostMapping("/update")
     public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("description") String description,@RequestParam("relationName")String relationName,@RequestParam("annotationName")String annotationName){
         Boolean isUpdate =relationService.updateById(id,description,relationName,annotationName);

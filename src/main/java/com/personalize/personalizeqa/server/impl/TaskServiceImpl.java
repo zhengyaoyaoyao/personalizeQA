@@ -21,6 +21,7 @@ import com.personalize.personalizeqa.vo.TasksListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -39,13 +40,13 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     @Autowired
     private TaskMapper taskMapper;
     @Override
-    public Boolean insert(String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String infoSource, String infoSourceRule,Boolean status) {
+    public Boolean insert(String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String infoSource, String infoSourceRule,String taskNote,Boolean status) {
         String id = idGenerate.generate().toString();
         LocalDateTime now = LocalDateTime.now();
         UserDTO curUser = UserHolder.getUser();
         String curUserName = curUser.getUsername();
         Task task = Task.builder()
-                .id(id).taskName(taskName).taskCollectionName(taskCollectionName).charge(charge).taskTime(taskTime).taskSourceName(infoSource).taskRule(infoSourceRule)
+                .id(id).taskName(taskName).taskCollectionName(taskCollectionName).charge(charge).taskTime(taskTime).taskSourceName(infoSource).taskRule(infoSourceRule).taskNote(taskNote)
                 .createTime(now).createUser(curUserName).updateTime(now).updateUser(curUserName).status(status)
                 .build();
         //保存任务-成员
@@ -61,7 +62,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
 
 
     @Override
-    public Boolean updateById(String id, String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String infoSource, Boolean status) {
+    @Transactional
+    public Boolean updateById(String id, String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String taskNote, Boolean status) {
         Task task = getById(id);
         //更新人员信息，那需要先把原来的人删了，然后在加上。把这个任务的人都删了，然后重新insert
         Boolean isDeleteMembers = taskMapper.deleteMembersByTaskId(id);
@@ -77,7 +79,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         task.setTaskCollectionName(taskCollectionName);
         task.setCharge(charge);
         task.setTaskTime(taskTime);
-        task.setTaskSourceName(infoSource);
+        task.setTaskNote(taskNote);
         task.setUpdateTime(LocalDateTime.now());
         task.setUpdateUser(UserHolder.getUser().getUsername());
         task.setStatus(status);
@@ -119,6 +121,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
             taskShowListVO.setTaskTime(task.getTaskTime());
             taskShowListVO.setInfoSourceName(infoSourceName);
             taskShowListVO.setInfoSourceRule(task.getTaskRule());
+            taskShowListVO.setTaskNote(task.getTaskNote());
             taskShowListVO.setStatus(task.isStatus());
             //最终放到TaskShowListVO中
             taskShowListVOS.add(taskShowListVO);
@@ -137,6 +140,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
      * @return
      */
     @Override
+    @Transactional
     public Boolean deleteById(String id) {
         //需要删除任务-用户表
         Boolean deleteUser = taskMapper.deleteMembersByTaskId(id);

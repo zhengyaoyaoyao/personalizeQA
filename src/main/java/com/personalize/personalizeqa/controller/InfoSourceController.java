@@ -1,9 +1,11 @@
 package com.personalize.personalizeqa.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.personalize.personalizeqa.annotationEntity.OperationLogging;
 import com.personalize.personalizeqa.entity.InfoSource;
 import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.entity.Relation;
+import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IInfoSourceService;
 import com.personalize.personalizeqa.server.IRelationService;
 import com.personalize.personalizeqa.vo.InfoSourceListVO;
@@ -22,6 +24,7 @@ import java.util.List;
 public class InfoSourceController {
     @Autowired
     private IInfoSourceService infoSourceService;
+    @OperationLogging(description = "新建信源",type = OperationType.INSERT)
     @PostMapping("/insert")
     public R<Boolean> insertTaskType(@RequestParam("infoSourceName") String infoSourceName,@RequestParam("infoSourceUrl")String infoSourceUrl,@RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("infoSourceDesc")String infoSourceDesc){
 
@@ -50,17 +53,18 @@ public class InfoSourceController {
      * @param id
      * @return
      */
+    @OperationLogging(description = "删除信源信息",type = OperationType.DELETE)
     @GetMapping("/deleteById")
     public R<Boolean> deleteById(@RequestParam("id")String id){
         Boolean isDelete  = infoSourceService.deleteById(id);
         return R.success(isDelete);
     }
-
     /**
      * 更新操作
      * @param id
      * @return
      */
+    @OperationLogging(description = "更新信源信息",type = OperationType.UPDATE)
     @PostMapping("/update")
     public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("infoSourceName") String infoSourceName,@RequestParam("infoSourceUrl")String infoSourceUrl,@RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("infoSourceDesc")String infoSourceDesc){
         Boolean isUpdate =infoSourceService.updateById(id,infoSourceName,infoSourceUrl,infoSourceRule,infoSourceDesc);
@@ -92,8 +96,7 @@ public class InfoSourceController {
         List<TaskGetInfoSourcesVO>  taskGetInfoSourcesVOS = infoSourceService.getInfoSources();
         return R.success(taskGetInfoSourcesVOS);
     }
-
-    @GetMapping("getByName")
+    @GetMapping("/getByName")
     public R<InfoSource> getByName(@RequestParam("infoSourceName")String infoSourceName){
         InfoSource infoSource = infoSourceService.getByName(infoSourceName);
         return R.success(infoSource);
