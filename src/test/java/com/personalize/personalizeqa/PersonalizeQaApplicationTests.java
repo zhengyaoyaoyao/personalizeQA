@@ -1,45 +1,29 @@
 package com.personalize.personalizeqa;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrPool;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.VoidResult;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.personalize.personalizeqa.entity.File;
 import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.server.IInfoSourceFileService;
 import com.personalize.personalizeqa.server.ITaskService;
 import com.personalize.personalizeqa.server.IUserService;
 import com.personalize.personalizeqa.vo.HomeTaskInfoVO;
 import com.personalize.personalizeqa.vo.UserInfoVO;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @SpringBootTest
 class PersonalizeQaApplicationTests {
@@ -68,16 +52,14 @@ class PersonalizeQaApplicationTests {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-		LocalDateTime now = LocalDateTime.now();
-
-
-		String time = DateUtil.format(now,"yyyyMMdd");
-		String collection = "shige"+time;
-		boolean b = mongoTemplate.collectionExists(collection);
-		System.out.println(b);
-//		if (mongoTemplate.collectionExists("ceshi")){
-//			mongoTemplate.createCollection(byId.getTaskCode());
-//		}
+//		LocalDateTime now = LocalDateTime.now();
+//		String time = DateUtil.format(now,"yyyyMMdd");
+//		String collection = "shige"+time;
+//		boolean b = mongoTemplate.collectionExists(collection);
+//		System.out.println(b);
+		if (!mongoTemplate.collectionExists("ceshi")){
+			System.out.println("测试连接");
+		}
 	}
 
 //	@Autowired

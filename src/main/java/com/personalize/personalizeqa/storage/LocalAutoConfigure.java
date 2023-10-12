@@ -4,6 +4,7 @@ import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;
 import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.entity.File;
+import com.personalize.personalizeqa.entity.InfoSourceAttach;
 import com.personalize.personalizeqa.entity.InfoSourceFile;
 import com.personalize.personalizeqa.properties.FileServerProperties;
 import com.personalize.personalizeqa.strategy.impl.AbstractFileStrategy;
@@ -89,7 +90,7 @@ public class LocalAutoConfigure {
         }
 
         @Override
-        public void uoloadInfoSourceFileImpl(InfoSourceFile infoSourceFile, MultipartFile multipartFile) throws Exception {
+        public void uploadInfoSourceFileImpl(InfoSourceFile infoSourceFile, MultipartFile multipartFile) throws Exception {
             buildClient();
             String fileName = UUID.randomUUID().toString()+StrPool.DOT+infoSourceFile.getExt();
             LocalDateTime now = LocalDateTime.now();
@@ -138,6 +139,11 @@ public class LocalAutoConfigure {
         @Override
         public String getFileContent(String relativePath, String fileName) {
             return null;
+        }
+
+        @Override
+        public void uploadInfoSourceAttachImpl(InfoSourceAttach infoSourceAttach, MultipartFile multipartFile) throws Exception {
+
         }
     }
 }

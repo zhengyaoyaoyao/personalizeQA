@@ -5,11 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.personalize.personalizeqa.dto.UserDTO;
-import com.personalize.personalizeqa.entity.InfoSource;
-import com.personalize.personalizeqa.entity.InfoSourceFile;
-import com.personalize.personalizeqa.entity.R;
-import com.personalize.personalizeqa.entity.Task;
+import com.personalize.personalizeqa.entity.*;
 import com.personalize.personalizeqa.mapper.TaskMapper;
+import com.personalize.personalizeqa.server.IInfoSourceAttachService;
 import com.personalize.personalizeqa.server.IInfoSourceFileService;
 import com.personalize.personalizeqa.server.ITaskService;
 import com.personalize.personalizeqa.strategy.FileStrategy;
@@ -19,7 +17,12 @@ import com.personalize.personalizeqa.vo.HomeTaskInfoVO;
 import com.personalize.personalizeqa.vo.TaskShowListVO;
 import com.personalize.personalizeqa.vo.TasksListVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 @Slf4j
 public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements ITaskService {
@@ -37,6 +43,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     private FileStrategy fileStrategy;
     @Autowired
     private IInfoSourceFileService infoSourceFileService;
+    @Autowired
+    private IInfoSourceAttachService infoSourceAttachService;
     @Autowired
     private TaskMapper taskMapper;
     @Override
@@ -199,4 +207,43 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         homeTaskInfoVO.setUnsuccess(countUnSuccess);
         return homeTaskInfoVO;
     }
+
+    @Override
+    public ResponseEntity<byte[]> uploadAttachsById(String id, String taskCode, MultipartFile[] files) {
+        Map<String,String> result = new  HashMap<String,String>();
+        taskCode = StringUtils.lowerCase(taskCode);
+        //上传附件到文件夹
+        for (MultipartFile multipartFile:files){
+            InfoSourceAttach infoSourceAttach = fileStrategy.uploadInfoSourceAttach(multipartFile,taskCode);
+            String attachId = idGenerate.generate().toString();
+            infoSourceAttach.setId(attachId);
+            infoSourceAttach.setTaskId(id);
+            boolean upload = infoSourceAttachService.upload(infoSourceAttach);
+            if (!upload){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            result.put(infoSourceAttach.getSubmittedFileName(),infoSourceAttach.getUrl());
+        }
+        return downAttachToUrlInfo(result);
+    }
+    public ResponseEntity<byte[]> downAttachToUrlInfo(Map<String,String> attachsInfo){
+        if (attachsInfo!=null&&!attachsInfo.isEmpty()){
+            //将map写入到文本文件中
+            StringBuilder content = new StringBuilder();
+            for (Map.Entry<String,String> entry:attachsInfo.entrySet()){
+                content.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
+            }
+            //设置响应头信息
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.TEXT_PLAIN);
+            headers.setContentDispositionFormData("attachment","attachments.txt");
+            //将文本文件内容转换为字节数组并返回给前端
+            byte[] fileContent = content.toString().getBytes();
+            return new ResponseEntity<>(fileContent,headers, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

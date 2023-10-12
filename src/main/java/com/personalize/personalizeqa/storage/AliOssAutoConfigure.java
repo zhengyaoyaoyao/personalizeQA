@@ -10,6 +10,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.*;
 import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.entity.File;
+import com.personalize.personalizeqa.entity.InfoSourceAttach;
 import com.personalize.personalizeqa.entity.InfoSourceFile;
 import com.personalize.personalizeqa.properties.FileServerProperties;
 import com.personalize.personalizeqa.strategy.impl.AbstractFileStrategy;
@@ -112,7 +113,7 @@ public class AliOssAutoConfigure {
         }
 
         @Override
-        public void uoloadInfoSourceFileImpl(InfoSourceFile infoSourceFile, MultipartFile multipartFile) throws Exception {
+        public void uploadInfoSourceFileImpl(InfoSourceFile infoSourceFile, MultipartFile multipartFile) throws Exception {
             OSS client = buildClient();
             //获取OSS空间名称
             String bucketName = properties.getBucketName();
@@ -218,5 +219,52 @@ public class AliOssAutoConfigure {
             }
             return null;
         }
+
+        @Override
+        public void uploadInfoSourceAttachImpl(InfoSourceAttach infoSourceAttach, MultipartFile multipartFile) throws Exception {
+            OSS client = buildClient();
+            //获取OSS空间名称
+            String bucketName = properties.getBucketName();
+            if (!client.doesBucketExist(bucketName)){
+                //创建存储空间
+                client.createBucket(bucketName);
+            }
+            //生成文件名
+            String fileName  = UUID.randomUUID().toString()+ StrPool.DOT+infoSourceAttach.getExt();
+            //日期文件夹，例如:2020/04
+            LocalDateTime now = LocalDateTime.now();
+            //生成日期+数据集名字的相对路径
+            String relativePath = now.format(DateTimeFormatter.ofPattern(DateUtils.DEFAULT_YEAR_FORMAT))+SLASH+infoSourceAttach.getTaskCode()+SLASH+"attach".toString();
+            String relativeFileName = relativePath+StrPool.SLASH+fileName;
+            relativeFileName = StrUtil.replace(relativeFileName, "\\\\",
+                    StrPool.SLASH);
+            relativeFileName = StrUtil.replace(relativeFileName, "\\",
+                    StrPool.SLASH);
+
+            //对象元数据
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentDisposition("attachment;fileName="+infoSourceAttach.getSubmittedFileName());
+            metadata.setContentType(infoSourceAttach.getContextType());
+
+            //上传请求对象
+            PutObjectRequest request = new PutObjectRequest(bucketName,relativeFileName,multipartFile.getInputStream(),metadata);
+            //上传文件到阿里云OSS空间
+            PutObjectResult result = client.putObject(request);
+            //文件上传完成后需要设置上传文件相关信息，用于保存到数据库中
+            log.info("result={}", JSONObject.toJSONString(result));
+            String url = getUriPrefix()+StrPool.SLASH+relativeFileName;
+            url = StrUtil.replace(url, "\\\\", StrPool.SLASH);
+            url = StrUtil.replace(url, "\\", StrPool.SLASH);
+            //写入文件表
+            infoSourceAttach.setUrl(url);
+            infoSourceAttach.setFileName(fileName);
+            infoSourceAttach.setRelativePath(relativePath);
+            infoSourceAttach.setGroup(result.getETag());
+            infoSourceAttach.setPath(result.getRequestId());
+            //关闭阿里云OSS客户端
+            client.shutdown();
+        }
     }
+
+
 }

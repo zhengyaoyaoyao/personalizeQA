@@ -2,6 +2,7 @@ package com.personalize.personalizeqa.strategy;
 
 import com.personalize.personalizeqa.dto.FileDeleteDO;
 import com.personalize.personalizeqa.entity.File;
+import com.personalize.personalizeqa.entity.InfoSourceAttach;
 import com.personalize.personalizeqa.entity.InfoSourceFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,4 +23,6 @@ public interface FileStrategy {
     public boolean delete(List<FileDeleteDO> list);
     void deleteFolder(String rel_folder);
     String getFileContent(String relativePath,String fileName);
+
+    InfoSourceAttach uploadInfoSourceAttach(MultipartFile multipartFile, String folder);
 }

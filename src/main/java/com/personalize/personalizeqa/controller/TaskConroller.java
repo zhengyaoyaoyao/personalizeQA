@@ -8,11 +8,14 @@ import com.personalize.personalizeqa.server.ITaskService;
 import com.personalize.personalizeqa.vo.TaskShowListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -62,5 +65,17 @@ public class TaskConroller {
     public R<Boolean> isNotExist(@RequestParam("taskName")String taskName){
         boolean noExist = taskService.isNotExist(taskName);
         return R.success(noExist);
+    }
+    /**
+     * 上传附件，返回附件对应的url地址
+     */
+    @PostMapping("/uploadAttachs")
+    public ResponseEntity<byte[]> uploadAttachs(@RequestParam("id")String id, @RequestParam("taskCollectionName")String taskCode, @RequestParam("files")MultipartFile[] files){
+        if (id!=null){
+            return taskService.uploadAttachsById(id,taskCode,files);
+        }else {
+            log.error("对某个任务添加附件时，id为空");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

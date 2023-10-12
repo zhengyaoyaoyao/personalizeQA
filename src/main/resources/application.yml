@@ -41,7 +41,7 @@ spring:
       uris: http://192.168.109.129:9200
   data:
     mongodb:
-      uri: mongodb://root:Mongodb123@dds-2ze92a4d6f62fb841990-pub.mongodb.rds.aliyuncs.com:3717,dds-2ze92a4d6f62fb842745-pub.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-71526813
+      uri: mongodb://zhengyao:94364926.99@dds-2ze92a4d6f62fb841990-pub.mongodb.rds.aliyuncs.com:3717,dds-2ze92a4d6f62fb842745-pub.mongodb.rds.aliyuncs.com:3717/personlized?replicaSet=mgset-71526813
   profiles:
     active: dev
 mybatis-plus:
