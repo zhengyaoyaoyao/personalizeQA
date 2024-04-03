@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 @CrossOrigin // 允许来自指定源的请求
 @Slf4j
 @RestController
+
 public class FilesController {
     @Autowired
     private IFileService fileService;

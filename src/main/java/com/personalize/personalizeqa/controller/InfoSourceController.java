@@ -24,11 +24,11 @@ import java.util.List;
 public class InfoSourceController {
     @Autowired
     private IInfoSourceService infoSourceService;
-    @OperationLogging(description = "新建信源",type = OperationType.INSERT)
+//    @OperationLogging(description = "新建信源",type = OperationType.INSERT)
     @PostMapping("/insert")
-    public R<Boolean> insertTaskType(@RequestParam("infoSourceName") String infoSourceName,@RequestParam("infoSourceUrl")String infoSourceUrl,@RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("infoSourceDesc")String infoSourceDesc){
+    public R<Boolean> insertTaskType(@RequestParam("infoSourceName") String infoSourceName,@RequestParam("infoSourceUrl")String infoSourceUrl,@RequestParam("infoSourceApi")String infoSourceApi,@RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("infoSourceDesc")String infoSourceDesc){
 
-        boolean insert = infoSourceService.insert(infoSourceName,infoSourceUrl,infoSourceRule,infoSourceDesc);
+        boolean insert = infoSourceService.insert(infoSourceName,infoSourceUrl,infoSourceApi,infoSourceRule,infoSourceDesc);
         return R.success(insert);
     }
 
@@ -59,15 +59,20 @@ public class InfoSourceController {
         Boolean isDelete  = infoSourceService.deleteById(id);
         return R.success(isDelete);
     }
+    @GetMapping("/getById")
+    public R<InfoSource> getById(@RequestParam("id")String id){
+        InfoSource infoSource  = infoSourceService.getById(id);
+        return R.success(infoSource);
+    }
     /**
      * 更新操作
      * @param id
      * @return
      */
-    @OperationLogging(description = "更新信源信息",type = OperationType.UPDATE)
+//    @OperationLogging(description = "更新信源信息",type = OperationType.UPDATE)
     @PostMapping("/update")
-    public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("infoSourceName") String infoSourceName,@RequestParam("infoSourceUrl")String infoSourceUrl,@RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("infoSourceDesc")String infoSourceDesc){
-        Boolean isUpdate =infoSourceService.updateById(id,infoSourceName,infoSourceUrl,infoSourceRule,infoSourceDesc);
+    public R<Boolean> updateById(@RequestParam("id")String id,@RequestParam("infoSourceName") String infoSourceName,@RequestParam("infoSourceUrl")String infoSourceUrl,@RequestParam("infoSourceApi")String infoSourceApi,@RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("infoSourceDesc")String infoSourceDesc){
+        Boolean isUpdate =infoSourceService.updateById(id,infoSourceName,infoSourceUrl,infoSourceApi,infoSourceRule,infoSourceDesc);
         return R.success(isUpdate);
     }
     /**
@@ -101,5 +106,6 @@ public class InfoSourceController {
         InfoSource infoSource = infoSourceService.getByName(infoSourceName);
         return R.success(infoSource);
     }
+
 
 }

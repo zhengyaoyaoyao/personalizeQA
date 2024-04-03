@@ -16,7 +16,7 @@ public class TaskShowListVO {
     private String taskName;
     private String charge;
     private List<String> members;
-    private String taskTime;
+    private List<String> taskTime;
     private String taskCollectionName;
     private String infoSourceName;
     private String infoSourceRule;

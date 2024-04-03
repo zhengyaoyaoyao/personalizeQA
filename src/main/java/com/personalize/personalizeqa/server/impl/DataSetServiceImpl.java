@@ -216,7 +216,7 @@ public class DataSetServiceImpl extends ServiceImpl<DataSetMapper, DataSet> impl
         queryWrapper.eq(DataSet::getDataName, dataName);
 
         // 使用 count 方法来获取匹配记录的数量
-        int count = count(queryWrapper);
+        long count = count(queryWrapper);
 
         // 如果记录数量大于 0，则说明存在
         return (count == 0);

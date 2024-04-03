@@ -30,12 +30,12 @@ public class InfoSourceImpl extends ServiceImpl<InfoSourceMapper, InfoSource> im
     private InfoSourceMapper infoSourceMapper;
 
     @Override
-    public boolean insert(String infoSourceName, String infoSourceUrl, String infoSourceRule, String infoSourceDesc) {
+    public boolean insert(String infoSourceName, String infoSourceUrl,String infoSourceApi, String infoSourceRule, String infoSourceDesc) {
         String id = idGenerate.generate().toString();
         LocalDateTime now = LocalDateTime.now();
         UserDTO user = UserHolder.getUser();
         String username = user.getUsername();
-        InfoSource infoSource = InfoSource.builder().id(id).infoSourceName(infoSourceName).infoSourceUrl(infoSourceUrl).infoSourceRule(infoSourceRule).infoSourceDesc(infoSourceDesc).createTime(now).createUser(username).updateTime(now).updateUser(username).build();
+        InfoSource infoSource = InfoSource.builder().id(id).infoSourceName(infoSourceName).infoSourceUrl(infoSourceUrl).infoSourceApi(infoSourceApi).infoSourceRule(infoSourceRule).infoSourceDesc(infoSourceDesc).createTime(now).createUser(username).updateTime(now).updateUser(username).build();
         boolean save = save(infoSource);
         return save;
     }
@@ -56,10 +56,11 @@ public class InfoSourceImpl extends ServiceImpl<InfoSourceMapper, InfoSource> im
     }
 
     @Override
-    public Boolean updateById(String id, String infoSourceName, String infoSourceUrl, String infoSourceRule, String infoSourceDesc) {
+    public Boolean updateById(String id, String infoSourceName, String infoSourceUrl,String infoSourceApi, String infoSourceRule, String infoSourceDesc) {
         InfoSource infoSource = getById(id);
         infoSource.setInfoSourceName(infoSourceName);
         infoSource.setInfoSourceUrl(infoSourceUrl);
+        infoSource.setInfoSourceApi(infoSourceApi);
         infoSource.setInfoSourceRule(infoSourceRule);
         infoSource.setInfoSourceDesc(infoSourceDesc);
         //更新用户和时间
@@ -83,7 +84,7 @@ public class InfoSourceImpl extends ServiceImpl<InfoSourceMapper, InfoSource> im
     public boolean isNotExist(String infoSourceName) {
         LambdaQueryWrapper<InfoSource> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(InfoSource::getInfoSourceName,infoSourceName);
-        int count = count(queryWrapper);
+        long count = count(queryWrapper);
         return count==0;
     }
 

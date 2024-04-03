@@ -11,10 +11,7 @@ import com.personalize.personalizeqa.entity.InfoSourceFile;
 import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.mapper.InfoSourceFileMapper;
 import com.personalize.personalizeqa.server.IInfoSourceFileService;
-import com.personalize.personalizeqa.server.IInfoSourceService;
-import com.personalize.personalizeqa.storage.AliOssAutoConfigure;
 import com.personalize.personalizeqa.strategy.FileStrategy;
-import com.personalize.personalizeqa.strategy.impl.AbstractFileStrategy;
 import com.personalize.personalizeqa.utils.UserHolder;
 import com.personalize.personalizeqa.vo.InfoSourceFileVO;
 import org.apache.http.HttpEntity;
@@ -27,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,8 +37,6 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
     private FileStrategy fileStrategy;
     @Autowired
     private MongoTemplate mongoTemplate;
-    @Autowired
-    private AliOssAutoConfigure.AliServiceImpl aliService;
     @Override
     public boolean upload(InfoSourceFile infoSourceFile) {
         LocalDateTime now  = LocalDateTime.now();
@@ -134,9 +128,8 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
     @Override
     public R<Boolean> checkFile(String id) {
         InfoSourceFile byId = getById(id);
-
         //获得文件，从而要获得这个文件的json内容
-        String fileContent = getAliFileContent(id);
+        String fileContent = getClientFileContent(id);
         if (StrUtil.isBlank(fileContent)){
             return R.fail("获取文件内容异常");
         }
@@ -168,9 +161,9 @@ public class InfoSourceFileImpl  extends ServiceImpl<InfoSourceFileMapper, InfoS
         return R.success(b,"数据库载入成功");
     }
     @Override
-    public String getAliFileContent(String id){
+    public String getClientFileContent(String id){
         InfoSourceFile byId = getById(id);
-        String fileContent = aliService.getFileContent(byId.getRelativePath(), byId.getFileName());
+        String fileContent = fileStrategy.getFileContent(byId.getRelativePath(), byId.getFileName());
         return fileContent;
     }
 }

@@ -26,7 +26,7 @@ public class InfoSourceFileController {
     }
     @GetMapping("/getContent")
     public R<String> getContent(@RequestParam("id")String id){
-        String fileContent = infoSourceFileService.getAliFileContent(id);
+        String fileContent = infoSourceFileService.getClientFileContent(id);
         return R.success(fileContent);
     }
     @OperationLogging(description = "删除信源文件",type = OperationType.DELETE)

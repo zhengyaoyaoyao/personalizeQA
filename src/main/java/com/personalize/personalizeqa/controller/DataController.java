@@ -9,6 +9,7 @@ import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.enumeration.OperationType;
 import com.personalize.personalizeqa.server.IDataSetService;
 import com.personalize.personalizeqa.vo.DataListVO;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 @CrossOrigin // 允许来自指定源的请求
 @RequestMapping("/dataset")
 @Slf4j
+@Api(value = "数据集上传",tags = "数据集上传")
 public class DataController {
     @Autowired
     private IDataSetService dataSetService;
@@ -33,7 +35,13 @@ public class DataController {
      * @param keyword  模糊搜索的关键词
      * @return
      */
+    @ApiOperation("查询所有数据集")
     @GetMapping("/findall")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "当前页", dataType = "Integer", paramType = "query"),
+            @ApiImplicitParam(name = "per_page", value = "每页多少条", dataType = "Integer", paramType = "query"),
+            @ApiImplicitParam(name = "keyword", value = "模糊搜索的关键词", dataType = "String", paramType = "query")
+    })
     public R<Page<DataSet>> findAll(@RequestParam(value = "page",defaultValue = "1")Integer page, @RequestParam("per_page")Integer perPage,@RequestParam(value = "keyword",required = false)String keyword){
         log.info("一页多少个：",page);
         log.info("当前页:",perPage);

@@ -33,7 +33,8 @@ public class UserController {
     public R<String> login(@RequestBody LoginFormDTO loginFormDTO, HttpServletRequest request){
         log.info("{}",loginFormDTO);
         // TODO 实现登录功能
-        return userService.login(loginFormDTO,request);
+        R<String> loginState =  userService.login(loginFormDTO,request);
+        return loginState;
     }
     @GetMapping("/profile")
     public R<UserLoginInfoVO> profile(){

@@ -22,8 +22,10 @@ public class Task  extends En<String>{
     private String taskCollectionName;
     @TableField("charge")
     private String charge;
-    @TableField("task_time")
-    private String taskTime;
+    @TableField("start_time")
+    private Long startTime;
+    @TableField("end_time")
+    private Long endTime;
     @TableField("task_info_source_name")
     private String taskSourceName;
     @TableField("task_rule")
@@ -34,7 +36,7 @@ public class Task  extends En<String>{
     private boolean status;
     @Builder
     public Task(String id, LocalDateTime createTime, String createUser, LocalDateTime updateTime, String updateUser,
-                String taskName,String taskCollectionName, String charge, String taskTime,
+                String taskName,String taskCollectionName, String charge, Long startTime,Long endTime,
                 String taskSourceName,String taskRule,String taskNote,Boolean status){
         this.id = id;
         this.createTime = createTime;
@@ -44,7 +46,8 @@ public class Task  extends En<String>{
         this.taskName = taskName;
         this.taskCollectionName = taskCollectionName;
         this.charge = charge;
-        this.taskTime = taskTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.taskSourceName = taskSourceName;
         this.taskRule = taskRule;
         this.taskNote = taskNote;

@@ -12,9 +12,11 @@ public interface IInfoSourceFileService  extends IService<InfoSourceFile> {
     boolean upload(InfoSourceFile infoSourceFile);
 
     List<InfoSourceFileVO> findAll(String id);
-    String getAliFileContent(String id);
+    String getFileContent(String id);
 
     Boolean deleteFile(String id);
 
     R<Boolean> checkFile(String id);
+
+    String getClientFileContent(String id);
 }

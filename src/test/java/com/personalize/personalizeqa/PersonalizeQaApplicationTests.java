@@ -11,6 +11,7 @@ import com.personalize.personalizeqa.entity.R;
 import com.personalize.personalizeqa.server.IInfoSourceFileService;
 import com.personalize.personalizeqa.server.ITaskService;
 import com.personalize.personalizeqa.server.IUserService;
+import com.personalize.personalizeqa.storage.LinuxAutoConfig;
 import com.personalize.personalizeqa.vo.HomeTaskInfoVO;
 import com.personalize.personalizeqa.vo.UserInfoVO;
 import org.junit.jupiter.api.Test;
@@ -30,44 +31,17 @@ class PersonalizeQaApplicationTests {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
-	private IInfoSourceFileService infoSourceFileService;
+	private LinuxAutoConfig.LinuxServiceImpl linuxService;
 	@Test
 	public void createCollection() throws IOException {
-//		mongoTemplate.createCollection("ceshi");
-//		String fileContent = infoSourceFileService.getFileContent("1149387625539305601");
-//		System.out.println(fileContent);
-//		String jsonFilePath ="C:\\Users\\zheng\\IdeaProjects\\personalizeQA\\personalizeQA\\src\\main\\resources\\doc\\爱莲说.json";
-//		try {
-//			// 创建ObjectMapper对象
-//			ObjectMapper objectMapper = new ObjectMapper();
-//
-//			// 读取JSON文件并解析为List<Map<String, Object>>
-//			List<Map<String, Object>> jsonArray = objectMapper.readValue(fileContent, List.class);
-//
-//			// 遍历List中的Map对象
-//			for (Map<String, Object> jsonObject : jsonArray) {
-//				// 处理每个Map对象
-//				mongoTemplate.save(jsonObject,"ceshi");
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		LocalDateTime now = LocalDateTime.now();
-//		String time = DateUtil.format(now,"yyyyMMdd");
-//		String collection = "shige"+time;
-//		boolean b = mongoTemplate.collectionExists(collection);
-//		System.out.println(b);
-		if (!mongoTemplate.collectionExists("ceshi")){
-			System.out.println("测试连接");
-		}
+		boolean b = mongoTemplate.collectionExists("user");
+		System.out.println(b);
 	}
 
 //	@Autowired
 //	private IInfoSourceFileService infoSourceFileService;
 	@Test
 	public void test(){
-		String url ="http://192.168.10.131:10000/dataset-files/2023/zhihu/efdea7e8-4291-4b24-9651-2a7435b709a1.json";
-//		System.out.println(infoSourceFileService.getFileContent(url));
 	}
 	@Autowired
 	private ITaskService taskService;
@@ -127,6 +101,12 @@ class PersonalizeQaApplicationTests {
 		VoidResult voidResult = client.deleteObject(bucketName,input);
 		//关闭阿里云OSS客户端
 		client.shutdown();
+	}
+	@Test
+	public void main(){
+		for (int i =0;i<5;i++){
+			System.out.println(i);
+		}
 	}
 	@Test
 	public void downFile(){

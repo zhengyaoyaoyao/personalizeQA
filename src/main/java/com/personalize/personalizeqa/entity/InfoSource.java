@@ -19,13 +19,15 @@ public class InfoSource extends En<String>{
     private String infoSourceName;
     @TableField("info_source_url")
     private String infoSourceUrl;
+    @TableField("info_source_api")
+    private String infoSourceApi;
     @TableField("info_source_rule")
     private String infoSourceRule;
     @TableField("info_source_desc")
     private String infoSourceDesc;
     @Builder
     public InfoSource(String id, LocalDateTime createTime, String createUser, LocalDateTime updateTime, String updateUser,
-                      String infoSourceName,String infoSourceUrl,String infoSourceRule,String infoSourceDesc){
+                      String infoSourceName,String infoSourceApi,String infoSourceUrl,String infoSourceRule,String infoSourceDesc){
         this.id = id;
         this.createTime = createTime;
         this.createUser = createUser;
@@ -33,6 +35,7 @@ public class InfoSource extends En<String>{
         this.updateUser = updateUser;
         this.infoSourceName = infoSourceName;
         this.infoSourceUrl = infoSourceUrl;
+        this.infoSourceApi = infoSourceApi;
         this.infoSourceRule = infoSourceRule;
         this.infoSourceDesc = infoSourceDesc;
     }

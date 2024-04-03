@@ -29,11 +29,11 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //get token
         if (HttpMethod.OPTIONS.toString().equals(request.getMethod())){
-            System.out.println("OPTIONS请求，放行");
+//            System.out.println("OPTIONS请求，放行");
             return true;
         }
         String token = request.getHeader("Authorization");
-        System.out.println("非OPTIONS请求，拦截");
+//        System.out.println("非OPTIONS请求，拦截");
         if (StrUtil.isBlank(token)) {
             response.setStatus(401);
             return false;
@@ -63,7 +63,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        System.out.println("消除用户信息");
+//        System.out.println("消除用户信息");
         UserHolder.removeUser();
     }
 }

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class HomeTaskInfoVO {
-    private int success;
-    private int unsuccess;
+    private long success;
+    private long unsuccess;
 }

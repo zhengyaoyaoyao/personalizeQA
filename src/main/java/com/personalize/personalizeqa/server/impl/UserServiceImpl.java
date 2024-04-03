@@ -53,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //判断用户是否存在
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername,curUsername);
-        int isExist = count(queryWrapper);
+        long isExist = count(queryWrapper);
         if (isExist==0){
             return R.fail("用户不存在");
         }
@@ -131,7 +131,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //判断是否存在
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername,username);
-        int count = count(queryWrapper);
+        long count = count(queryWrapper);
         return (count==0);
     }
 

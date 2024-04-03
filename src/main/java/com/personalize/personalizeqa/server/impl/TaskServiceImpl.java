@@ -27,12 +27,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -48,13 +48,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     @Autowired
     private TaskMapper taskMapper;
     @Override
-    public Boolean insert(String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String infoSource, String infoSourceRule,String taskNote,Boolean status) {
+    public Boolean insert(String taskName,String taskCollectionName, String charge, List<String> proMembers, List<String> taskTime, String infoSource, String infoSourceRule,String taskNote,Boolean status) {
         String id = idGenerate.generate().toString();
         LocalDateTime now = LocalDateTime.now();
         UserDTO curUser = UserHolder.getUser();
+        long startTime = convertToTimestamp(taskTime.get(0));
+        long endTime = convertToTimestamp(taskTime.get(1));
         String curUserName = curUser.getUsername();
         Task task = Task.builder()
-                .id(id).taskName(taskName).taskCollectionName(taskCollectionName).charge(charge).taskTime(taskTime).taskSourceName(infoSource).taskRule(infoSourceRule).taskNote(taskNote)
+                .id(id).taskName(taskName).taskCollectionName(taskCollectionName).charge(charge).startTime(startTime).endTime(endTime).taskSourceName(infoSource).taskRule(infoSourceRule).taskNote(taskNote)
                 .createTime(now).createUser(curUserName).updateTime(now).updateUser(curUserName).status(status)
                 .build();
         //保存任务-成员
@@ -67,11 +69,23 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         return save;
     }
     //
+    public static long convertToTimestamp(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            // 解析日期字符串为 Date 对象
+            Date date = dateFormat.parse(dateString);
+            // 将 Date 对象转换为时间戳
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return -1; // 返回一个错误值，表示转换失败
+        }
+    }
 
 
     @Override
     @Transactional
-    public Boolean updateById(String id, String taskName,String taskCollectionName, String charge, List<String> proMembers, String taskTime, String taskNote, Boolean status) {
+    public Boolean updateById(String id, String taskName,String taskCollectionName, String charge, List<String> proMembers, List<String> taskTime, String taskNote, Boolean status) {
         Task task = getById(id);
         //更新人员信息，那需要先把原来的人删了，然后在加上。把这个任务的人都删了，然后重新insert
         Boolean isDeleteMembers = taskMapper.deleteMembersByTaskId(id);
@@ -86,7 +100,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         task.setTaskName(taskName);
         task.setTaskCollectionName(taskCollectionName);
         task.setCharge(charge);
-        task.setTaskTime(taskTime);
+        task.setStartTime(convertToTimestamp(taskTime.get(0)));
+        task.setEndTime(convertToTimestamp(taskTime.get(1)));
         task.setTaskNote(taskNote);
         task.setUpdateTime(LocalDateTime.now());
         task.setUpdateUser(UserHolder.getUser().getUsername());
@@ -95,11 +110,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
         return b;
     }
 
-    //
-    public LocalDateTime transDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime parse = LocalDateTime.parse(date, formatter);
-        return parse;
+    @Override
+    public Task getById(String id) {
+        Task task = taskMapper.selectById(id);
+        return task;
     }
 
     @Override
@@ -126,7 +140,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
             taskShowListVO.setTaskCollectionName(task.getTaskCollectionName());
             taskShowListVO.setCharge(task.getCharge());
             taskShowListVO.setMembers(members);
-            taskShowListVO.setTaskTime(task.getTaskTime());
+            String startTime = Long.toString(task.getStartTime());
+            String endTime = Long.toString(task.getEndTime());
+            List<String> timeList = new ArrayList<>();
+            timeList.add(startTime);
+            timeList.add(endTime);
+            taskShowListVO.setTaskTime(timeList);
             taskShowListVO.setInfoSourceName(infoSourceName);
             taskShowListVO.setInfoSourceRule(task.getTaskRule());
             taskShowListVO.setTaskNote(task.getTaskNote());
@@ -190,7 +209,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     public boolean isNotExist(String taskName) {
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Task::getTaskName,taskName);
-        int count = count(queryWrapper);
+        long count = count(queryWrapper);
         return count==0;
     }
 
@@ -198,10 +217,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     public HomeTaskInfoVO taskCompleteInfo() {
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Task::isStatus,0);
-        int countUnSuccess = count(queryWrapper);
+        long countUnSuccess = count(queryWrapper);
         LambdaQueryWrapper<Task> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.eq(Task::isStatus,1);
-        int countSuccess = count(queryWrapper1);
+        long countSuccess = count(queryWrapper1);
         HomeTaskInfoVO homeTaskInfoVO = new HomeTaskInfoVO();
         homeTaskInfoVO.setSuccess(countSuccess);
         homeTaskInfoVO.setUnsuccess(countUnSuccess);

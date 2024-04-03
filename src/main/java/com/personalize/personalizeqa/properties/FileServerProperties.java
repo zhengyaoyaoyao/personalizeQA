@@ -13,11 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class FileServerProperties {
     /**
      * 为以下3个值，指定不同的自动化配置
-     * qiniu：七牛oss
+     * linux：远程服务器
      * aliyun：阿里云oss
      * fastdfs：本地部署的fastDFS
      */
-    private FileStorageType type = FileStorageType.LOCAL;
+    private FileStorageType type = FileStorageType.TENCENT;
     /**
      * 文件访问前缀
      */
@@ -39,8 +39,7 @@ public class FileServerProperties {
     }
     private Properties local;
     private Properties ali;
-    private Properties minio;
-    private Properties qiniu;
+    private Properties linux;
     private Properties tencent;
 
     @Data
@@ -50,6 +49,7 @@ public class FileServerProperties {
         private String accessKeyId;
         private String accessKeySecret;
         private String bucketName;
+        private String region;
 
         public String getUriPrefix() {
             if(!uriPrefix.endsWith(StrPool.SLASH)){

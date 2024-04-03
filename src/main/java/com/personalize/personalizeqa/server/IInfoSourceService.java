@@ -17,13 +17,13 @@ public interface IInfoSourceService extends IService<InfoSource> {
 
     Boolean deleteById(String id);
 
-    Boolean updateById(String id, String infoSourceName, String infoSourceUrl, String infoSourceRule, String infoSourceDesc);
+    Boolean updateById(String id, String infoSourceName, String infoSourceUrl,String infoSourceApi, String infoSourceRule, String infoSourceDesc);
 
     InfoSourceListVO infoSourceList();
 
     boolean isNotExist(String infoSourceName);
 
-    boolean insert(String infoSourceName, String infoSourceUrl, String infoSourceRule, String infoSourceDesc);
+    boolean insert(String infoSourceName, String infoSourceUrl,String infoSourceApi, String infoSourceRule, String infoSourceDesc);
 
     List<TaskGetInfoSourcesVO> getInfoSources();
 

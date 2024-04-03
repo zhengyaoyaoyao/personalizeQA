@@ -15,7 +15,7 @@ public enum FileStorageType {
     FAST_DFS,
     ALI,
     MINIO,
-    QINIU,
+    LINUX,
     TENCENT,
     ;
 
