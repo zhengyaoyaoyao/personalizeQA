@@ -25,13 +25,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Set;
 
 @SpringBootTest
 class PersonalizeQaApplicationTests {
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	@Autowired
-	private LinuxAutoConfig.LinuxServiceImpl linuxService;
 	@Test
 	public void createCollection() throws IOException {
 		boolean b = mongoTemplate.collectionExists("user");
@@ -54,6 +54,12 @@ class PersonalizeQaApplicationTests {
 	RedisTemplate redisTemplate;
 	@Resource
 	StringRedisTemplate stringRedisTemplate;
+	@Test
+	void testRedis(){
+		redisTemplate.opsForValue().set("testKey","testValue");
+		String value = (String) redisTemplate.opsForValue().get("testKey");
+		System.out.println(value);
+	}
 	@Test
 	void contextLoads() {
 //		long count = stringRedisTemplate.opsForValue().increment("zzu");

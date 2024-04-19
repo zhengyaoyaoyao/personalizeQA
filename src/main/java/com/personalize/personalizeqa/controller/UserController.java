@@ -41,21 +41,18 @@ public class UserController {
         UserLoginInfoVO userLoginInfoVO = userService.profile();
         return R.success(userLoginInfoVO,"用户信息获取成功");
     }
-    @GetMapping("/findall")
+    @GetMapping("/users")
     public R<Page<UserInfoVO>> findAll(@RequestParam(value = "page",defaultValue = "1")Integer page, @RequestParam("per_page")Integer perPage, @RequestParam(value = "keyword",required = false)String keyword){
-        log.info("一页多少个：",page);
-        log.info("当前页:",perPage);
-        log.info("关键词是什么",keyword);
         R<Page<UserInfoVO>> usersList = userService.findAll(page,perPage,keyword);
         return usersList;
     }
-    @GetMapping("/isNotExist")
-    public R<Boolean> isNotExist(@RequestParam("username")String username){
+    @GetMapping("/isNotExist/{username}")
+    public R<Boolean> isNotExist(@PathVariable("username")String username){
         boolean noExist = userService.isNotExist(username);
         return R.success(noExist);
     }
     @OperationLogging(description = "新建用户",type = OperationType.INSERT)
-    @PostMapping("/insert")
+    @PostMapping("/user")
     public R<Boolean> insertUser(@RequestParam("username")String username,@RequestParam("nickName")String nickName,@RequestParam("phone")String phone,@RequestParam("password")String password,
                                  @RequestParam("organization")String organization,@RequestParam("authority")String authority,@RequestParam("status")Boolean status){
         Boolean isInsert = userService.insert(username,nickName,phone,password,organization,authority,status);
@@ -65,13 +62,13 @@ public class UserController {
             return R.fail("新建任务失败,请重新再试");
         }
     }
-    @GetMapping("/searchUserById")
-    public R<User>  searchUserById(@RequestParam("id")String id){
+    @GetMapping("/users/{id}")
+    public R<User>  searchUserById(@PathVariable("id")String id){
         User user = userService.searchUserById(id);
         return  R.success(user);
     }
     @OperationLogging(description = "更新用户信息",type =OperationType.UPDATE)
-    @PostMapping("/update")
+    @PutMapping("/user")
     public R<Boolean> updateUser(@RequestParam("id")String id,@RequestParam("username")String username,@RequestParam("nickName")String nickName,@RequestParam("phone")String phone,@RequestParam("password")String password,
                                  @RequestParam("organization")String organization,@RequestParam("authority")String authority,@RequestParam("status")Boolean status){
         Boolean isUpdate =  userService.updateUser(id,username,nickName,phone,password,organization,authority,status);
@@ -82,8 +79,8 @@ public class UserController {
         }
     }
     @OperationLogging(description = "删除用户信息",type = OperationType.DELETE)
-    @GetMapping("/deleteById")
-    public R<Boolean> deleteById(@RequestParam("id")String id){
+    @DeleteMapping("/users/{id}")
+    public R<Boolean> deleteById(@PathVariable("id")String id){
         Boolean isDelete =  userService.deleteById(id);
         return R.success(isDelete);
     }
@@ -92,5 +89,4 @@ public class UserController {
         List<Map<String, List<String>>>  organizationUser = userService.organizations();
         return R.success(organizationUser);
     }
-
 }

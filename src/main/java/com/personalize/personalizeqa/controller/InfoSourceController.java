@@ -25,9 +25,8 @@ public class InfoSourceController {
     @Autowired
     private IInfoSourceService infoSourceService;
 //    @OperationLogging(description = "新建信源",type = OperationType.INSERT)
-    @PostMapping("/insert")
+    @PostMapping("/info-source")
     public R<Boolean> insertTaskType(@RequestParam("infoSourceName") String infoSourceName,@RequestParam("infoSourceUrl")String infoSourceUrl,@RequestParam("infoSourceApi")String infoSourceApi,@RequestParam("infoSourceRule")String infoSourceRule,@RequestParam("infoSourceDesc")String infoSourceDesc){
-
         boolean insert = infoSourceService.insert(infoSourceName,infoSourceUrl,infoSourceApi,infoSourceRule,infoSourceDesc);
         return R.success(insert);
     }
@@ -39,11 +38,8 @@ public class InfoSourceController {
      * @param keyword
      * @return
      */
-    @GetMapping("/findall")
+    @GetMapping("/info-sources")
     public R<Page<InfoSource>> findAll(@RequestParam(value = "page",defaultValue = "1")Integer page, @RequestParam("per_page")Integer perPage, @RequestParam(value = "keyword",required = false)String keyword){
-        log.info("一页多少个：",page);
-        log.info("当前页:",perPage);
-        log.info("关键词是什么",keyword);
         R<Page<InfoSource>> infoSources = infoSourceService.findAll(page,perPage,keyword);
         return infoSources;
     }
@@ -54,13 +50,13 @@ public class InfoSourceController {
      * @return
      */
     @OperationLogging(description = "删除信源信息",type = OperationType.DELETE)
-    @GetMapping("/deleteById")
-    public R<Boolean> deleteById(@RequestParam("id")String id){
+    @DeleteMapping("/info-sources/{id}")
+    public R<Boolean> deleteById(@PathVariable("id")String id){
         Boolean isDelete  = infoSourceService.deleteById(id);
         return R.success(isDelete);
     }
-    @GetMapping("/getById")
-    public R<InfoSource> getById(@RequestParam("id")String id){
+    @GetMapping("/info-sources/{id}")
+    public R<InfoSource> getById(@PathVariable("id")String id){
         InfoSource infoSource  = infoSourceService.getById(id);
         return R.success(infoSource);
     }
@@ -106,6 +102,4 @@ public class InfoSourceController {
         InfoSource infoSource = infoSourceService.getByName(infoSourceName);
         return R.success(infoSource);
     }
-
-
 }
