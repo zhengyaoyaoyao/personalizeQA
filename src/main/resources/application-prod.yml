@@ -1,0 +1,75 @@
+server:
+  port: 9090
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+spring:
+  application:
+    name: 个性化问答数据平台
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://43.143.160.17:3306/personalization?useUnicode=true&useSSL=true&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    username: root
+    password: 123456
+    druid:
+      initial-size: 2
+      db-type: com.alibaba.druid.pool.DruidDataSource
+      min-idle: 2
+      max-wait: 60000
+  servlet:
+    multipart:
+      max-file-size: 512MB  # Max file size
+      max-request-size: 512MB #Max request size 默认10M
+  redis:
+    host: 43.143.160.17
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+  data:
+    mongodb:
+      uri: mongodb://zhengyao:123456@43.143.160.17:27017/personalization?authSource=personalization
+  profiles:
+    active: prod
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+mybatis-plus:
+  type-aliases-package: com.personalize.personalizeqa.entity
+logging:
+  level:
+    com.personalize.personalizeqa: info
+personalize:
+  nginx:
+    ip: localhost
+    port: 10000
+  file:
+    type: LINUX
+    local:
+      uri-prefix: http://127.0.0.1:10000
+      bucket-name: dataset-files
+      endpoint: C:\IT\Project\QA\uploadFiles
+    ali:
+      bucket-name: personlized-loan
+      endpoint: http://oss-cn-beijing.aliyuncs.com/
+      access-key-id: LTAI5tF1TYko4pncbKXEyAgu
+      access-key-secret: JZ7JxbVRqKqJf9n5aoAy1Fj0BNGDle
+    tencent:
+      region: ap-beijing
+      endpoint: https://personalized-loan-1322695558.cos.ap-beijing.myqcloud.com
+      access-key-id: AKIDHPK3YpsXgiW5TdZkiSyGF0Xpytd9RVLw
+      access-key-secret: Pnxtb5MQHuOgkbMuELEvNbaLsAEOK4f5
+      bucketName: personalized-loan-1322695558
+    linux:
+      uri-prefix: http://43.143.160.17:1000
+      bucket-name: dataset-files
+      endpoint: /data/personlization
+
+  database:
+    isBlockAttack: false  # 是否启用 攻击 SQL 阻断解析器
+id-generator:
+  machine-code: 1  # id生成器机器掩码
