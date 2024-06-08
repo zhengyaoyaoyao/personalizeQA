@@ -1,7 +1,6 @@
 package com.personalize.personalizeqa.utils;
 
 import com.personalize.personalizeqa.dto.UserDTO;
-import com.personalize.personalizeqa.entity.User;
 
 public class UserHolder {
     private static final ThreadLocal<UserDTO> tl = new ThreadLocal<>();

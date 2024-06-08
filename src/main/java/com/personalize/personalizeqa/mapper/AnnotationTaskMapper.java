@@ -36,7 +36,7 @@ public interface AnnotationTaskMapper extends BaseMapper<AnnotationTask> {
     int selectTaskEntityCountByTaskId(@Param("taskId")String taskId);
     @Select("select count(id) from qa_task_relation where task_id=#{taskId}")
     int selectTaskRelationCountByTaskId(@Param("taskId")String taskId);
-    @Select("select count(id)e from qa_task_file where task_id=#{taskId}")
+    @Select("select count(id) from qa_task_file where task_id=#{taskId}")
     int selectTaskFilesCountByTaskId(@Param("taskId")String taskId);
 
     //三张中间表进行关联查询，去qa_entity、qa_realtion、qa_file中查询他们对应的名称list
